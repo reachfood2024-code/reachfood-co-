@@ -324,28 +324,33 @@ const About = () => {
           </motion.div>
 
           <div className="relative">
-            <div className="absolute left-1/2 transform -translate-x-px h-full w-0.5 bg-teal-200"></div>
-            
+            {/* Timeline line - left on mobile, center on desktop */}
+            <div className="absolute left-4 md:left-1/2 md:transform md:-translate-x-px h-full w-0.5 bg-teal-200"></div>
+
             {milestones.map((milestone, index) => (
               <motion.div
-                key={milestone.year}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                key={`${milestone.year}-${index}`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className={`relative flex items-center mb-12 ${
-                  index % 2 === 0 ? 'justify-start' : 'justify-end'
+                className={`relative flex items-center mb-8 md:mb-12 ${
+                  index % 2 === 0 ? 'md:justify-start' : 'md:justify-end'
                 }`}
               >
-                <div className={`w-5/12 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
-                  <div className="bg-gradient-to-br from-orange-500 to-orange-600 border border-orange-400 rounded-lg p-6 shadow-lg">
-                    <div className="text-2xl font-bold text-white mb-2">{milestone.year}</div>
-                    <h3 className="text-xl font-semibold text-white mb-3">{milestone.title}</h3>
-                    <p className="text-orange-100">{milestone.description}</p>
+                {/* Mobile: full width card with left padding. Desktop: alternating sides */}
+                <div className={`w-full pl-12 md:pl-0 md:w-5/12 ${
+                  index % 2 === 0 ? 'md:pr-8 md:text-right' : 'md:pl-8 md:text-left'
+                }`}>
+                  <div className="bg-gradient-to-br from-orange-500 to-orange-600 border border-orange-400 rounded-lg p-4 md:p-6 shadow-lg">
+                    <div className="text-xl md:text-2xl font-bold text-white mb-2">{milestone.year}</div>
+                    <h3 className="text-lg md:text-xl font-semibold text-white mb-2 md:mb-3">{milestone.title}</h3>
+                    <p className="text-sm md:text-base text-orange-100">{milestone.description}</p>
                   </div>
                 </div>
-                
-                <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-teal-500 rounded-full border-4 border-white shadow-lg"></div>
+
+                {/* Timeline dot - left on mobile, center on desktop */}
+                <div className="absolute left-4 md:left-1/2 transform -translate-x-1/2 w-3 h-3 md:w-4 md:h-4 bg-teal-500 rounded-full border-2 md:border-4 border-white shadow-lg"></div>
               </motion.div>
             ))}
           </div>
