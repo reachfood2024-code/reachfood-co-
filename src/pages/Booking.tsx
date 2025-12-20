@@ -523,9 +523,11 @@ const Booking = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">Why Choose R<span className="text-orange-400">E</span>ACHF<span className="text-orange-400">OO</span>D?</h2>
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
+              {isArabic ? 'لماذا تختار REACHFOOD؟' : (<>Why Choose R<span className="text-orange-400">E</span>ACHF<span className="text-orange-400">OO</span>D?</>)}
+            </h2>
             <p className="text-xl text-teal-100 max-w-4xl mx-auto leading-relaxed">
-              More than just convenience - we're committed to your nutrition and our planet
+              {isArabic ? 'أكثر من مجرد راحة - نحن ملتزمون بتغذيتك وكوكبنا' : "More than just convenience - we're committed to your nutrition and our planet"}
             </p>
           </motion.div>
 
@@ -533,26 +535,26 @@ const Booking = () => {
             {[
               {
                 icon: Truck,
-                title: 'Free Shipping',
-                description: 'Free delivery on all subscription plans',
+                title: isArabic ? 'شحن مجاني' : 'Free Shipping',
+                description: isArabic ? 'توصيل مجاني لجميع خطط الاشتراك' : 'Free delivery on all subscription plans',
                 color: 'text-blue-400'
               },
               {
                 icon: Shield,
-                title: 'Quality Guarantee',
-                description: '100% satisfaction or your money back',
+                title: isArabic ? 'ضمان الجودة' : 'Quality Guarantee',
+                description: isArabic ? 'رضا 100% أو استرداد أموالك' : '100% satisfaction or your money back',
                 color: 'text-green-400'
               },
               {
                 icon: Leaf,
-                title: 'Sustainable',
-                description: 'Plantable packaging that grows into herbs',
+                title: isArabic ? 'مستدام' : 'Sustainable',
+                description: isArabic ? 'تغليف قابل للزراعة يتحول إلى أعشاب' : 'Plantable packaging that grows into herbs',
                 color: 'text-teal-400'
               },
               {
                 icon: Star,
-                title: 'Premium Quality',
-                description: 'Restaurant-quality meals with authentic flavors',
+                title: isArabic ? 'جودة فاخرة' : 'Premium Quality',
+                description: isArabic ? 'وجبات بجودة المطاعم بنكهات أصيلة' : 'Restaurant-quality meals with authentic flavors',
                 color: 'text-yellow-400'
               }
             ].map((benefit, index) => {

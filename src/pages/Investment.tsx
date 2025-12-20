@@ -19,29 +19,29 @@ const Investment = () => {
   const investmentHighlights = [
     {
       icon: DollarSign,
-      title: 'Massive Market',
-      description: 'Our target market in the MENA region is valued at $3.8 billion, with an immediate serviceable segment of $1.9 billion.',
+      title: isArabic ? 'سوق ضخم' : 'Massive Market',
+      description: isArabic ? 'يُقدر سوقنا المستهدف في منطقة الشرق الأوسط وشمال أفريقيا بـ 3.8 مليار دولار، مع شريحة قابلة للخدمة فوراً بقيمة 1.9 مليار دولار.' : 'Our target market in the MENA region is valued at $3.8 billion, with an immediate serviceable segment of $1.9 billion.',
       color: 'text-green-400',
       bgColor: 'bg-green-500/10'
     },
     {
       icon: TrendingUp,
-      title: 'Proven Traction',
-      description: 'Early sales and partnerships validate demand.',
+      title: isArabic ? 'نمو مثبت' : 'Proven Traction',
+      description: isArabic ? 'المبيعات المبكرة والشراكات تؤكد الطلب.' : 'Early sales and partnerships validate demand.',
       color: 'text-blue-400',
       bgColor: 'bg-blue-500/10'
     },
     {
       icon: Target,
-      title: 'Profitable Model',
-      description: 'Projected $282,000 in revenue and $222,000 in profit from 27,000 units per year.',
+      title: isArabic ? 'نموذج مربح' : 'Profitable Model',
+      description: isArabic ? 'إيرادات متوقعة بـ 282,000 دولار وأرباح 222,000 دولار من 27,000 وحدة سنوياً.' : 'Projected $282,000 in revenue and $222,000 in profit from 27,000 units per year.',
       color: 'text-purple-400',
       bgColor: 'bg-purple-500/10'
     },
     {
       icon: Shield,
-      title: 'Patented Innovation',
-      description: 'Our packaging combines sustainability and convenience, giving us a defensible competitive edge.',
+      title: isArabic ? 'ابتكار محمي ببراءة اختراع' : 'Patented Innovation',
+      description: isArabic ? 'تغليفنا يجمع بين الاستدامة والراحة، مما يمنحنا ميزة تنافسية قوية.' : 'Our packaging combines sustainability and convenience, giving us a defensible competitive edge.',
       color: 'text-orange-400',
       bgColor: 'bg-orange-500/10'
     }
@@ -50,38 +50,38 @@ const Investment = () => {
   const partnershipBenefits = [
     {
       icon: Globe,
-      title: 'Regional Expansion',
-      description: 'Direct presence in local markets plus strong online reach.',
+      title: isArabic ? 'التوسع الإقليمي' : 'Regional Expansion',
+      description: isArabic ? 'حضور مباشر في الأسواق المحلية مع وصول قوي عبر الإنترنت.' : 'Direct presence in local markets plus strong online reach.',
       color: 'text-teal-400'
     },
     {
       icon: Award,
-      title: 'Local Flavors, Global Standards',
-      description: 'We design products around local crops and traditional tastes, while ensuring international quality.',
+      title: isArabic ? 'نكهات محلية، معايير عالمية' : 'Local Flavors, Global Standards',
+      description: isArabic ? 'نصمم منتجاتنا حول المحاصيل المحلية والأذواق التقليدية، مع ضمان الجودة العالمية.' : 'We design products around local crops and traditional tastes, while ensuring international quality.',
       color: 'text-blue-400'
     },
     {
       icon: Handshake,
-      title: 'Shared Values',
-      description: 'We are driven by impact, sustainability, and long term collaboration.',
+      title: isArabic ? 'قيم مشتركة' : 'Shared Values',
+      description: isArabic ? 'نحن مدفوعون بالأثر والاستدامة والتعاون طويل الأمد.' : 'We are driven by impact, sustainability, and long term collaboration.',
       color: 'text-green-400'
     }
   ]
 
   const competitiveAdvantages = [
     {
-      title: 'Market Presence',
-      description: 'Unlike most competitors who focus only on online channels, we combine on-the-ground market presence with strong online visibility and our patented eco-friendly packaging makes us stand out.',
+      title: isArabic ? 'الحضور في السوق' : 'Market Presence',
+      description: isArabic ? 'على عكس معظم المنافسين الذين يركزون فقط على القنوات الإلكترونية، نجمع بين الحضور الميداني في السوق والوصول القوي عبر الإنترنت، وتغليفنا الصديق للبيئة الحاصل على براءة اختراع يميزنا.' : 'Unlike most competitors who focus only on online channels, we combine on-the-ground market presence with strong online visibility and our patented eco-friendly packaging makes us stand out.',
       icon: Building
     },
     {
-      title: 'Local Focus',
-      description: 'While others overlook local preferences, we embrace local crops and traditional flavors.',
+      title: isArabic ? 'التركيز المحلي' : 'Local Focus',
+      description: isArabic ? 'بينما يتجاهل الآخرون التفضيلات المحلية، نحن نتبنى المحاصيل المحلية والنكهات التقليدية.' : 'While others overlook local preferences, we embrace local crops and traditional flavors.',
       icon: Leaf
     },
     {
-      title: 'Affordable Access',
-      description: 'While their prices remain high, we keep our products affordable and accessible.',
+      title: isArabic ? 'الوصول بأسعار معقولة' : 'Affordable Access',
+      description: isArabic ? 'بينما تبقى أسعارهم مرتفعة، نحافظ على أسعار منتجاتنا معقولة وسهلة الوصول.' : 'While their prices remain high, we keep our products affordable and accessible.',
       icon: DollarSign
     }
   ]
