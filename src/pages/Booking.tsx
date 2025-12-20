@@ -371,7 +371,7 @@ const Booking = () => {
               <div className="space-y-6">
                 <div>
                   <label className="block text-slate-700 font-medium mb-2">{isArabic ? 'تكرار التسليم' : 'Delivery Frequency'}</label>
-                  <select className="w-full p-3 border border-slate-300 rounded-lg focus:border-teal-500 focus:outline-none">
+                  <select className="w-full p-3 border border-slate-300 rounded-lg focus:border-teal-500 focus:outline-none bg-white text-slate-900">
                     <option>{isArabic ? 'كل 4 أسابيع' : 'Every 4 weeks'}</option>
                     <option>{isArabic ? 'كل 6 أسابيع' : 'Every 6 weeks'}</option>
                     <option>{isArabic ? 'كل 8 أسابيع' : 'Every 8 weeks'}</option>
