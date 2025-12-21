@@ -73,6 +73,14 @@ const About = () => {
       expertise: isArabic ? 'تطوير تطبيقات الموبايل، الذكاء الاصطناعي، تعليم الرياضيات' : 'Full-Stack Mobile Development, AI Advising, Mathematics Education',
       email: 'enesalhurmuzi@gmail.com',
       image: '/images/anes.jpg'
+    },
+    {
+      name: isArabic ? 'عزالدين زلاق' : 'Azeddine Zellag',
+      role: isArabic ? 'مطور Full Stack' : 'Full Stack Developer',
+      background: isArabic ? 'مطور Full Stack يحمل ماجستير في علم النفس. متخصص في بناء منصات SaaS عالية الإيرادات وتطبيقات الذكاء الاصطناعي التي تعطي الأولوية للسلوك البشري وتجربة المستخدم. خبير في Next.js وهندسة تطبيقات الموبايل، مع التركيز على الترجمة الصوتية ووكلاء الذكاء الاصطناعي المعرفي.' : 'Full Stack Developer holding a Master\'s degree in Psychology. Specializes in building high-revenue SaaS platforms and AI-driven applications that prioritize human behavior and user experience. Expert in Next.js and mobile architecture, with a focus on voice translation and cognitive AI agents.',
+      expertise: isArabic ? 'هندسة Full-Stack، تكامل الذكاء الاصطناعي والصوت، تجربة المستخدم القائمة على علم النفس' : 'Full-Stack Architecture, AI & Voice Integration, Psychology-Driven UX',
+      email: 'autonomy.owner@gmail.com',
+      image: '/images/azeddinezellag.jpg'
     }
   ]
 
