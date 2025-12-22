@@ -41,6 +41,9 @@ interface CreateOrderData {
     lastName: string;
     phone?: string;
     address?: string;
+    city?: string;
+    country?: string;
+    gender?: string;
   };
   orderType: 'one-time' | 'subscription';
   items: Array<{
@@ -52,12 +55,16 @@ interface CreateOrderData {
   specialNotes?: string;
   deliveryFrequency?: string;
   shippingAddress?: Record<string, string>;
+  paymentMethod: 'cod';
+  sessionId?: string;
 }
 
 interface OrderResult {
   orderNumber: string;
   total: number;
   status: string;
+  paymentMethod: string;
+  paymentStatus: string;
 }
 
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -104,6 +111,34 @@ export const api = {
   async trackOrder(orderNumber: string) {
     const response = await request<{ success: boolean; data: unknown }>(`/orders/${orderNumber}`);
     return response.data;
+  },
+
+  // Checkout tracking
+  async trackCheckoutSession(data: {
+    sessionId: string;
+    currentStep: number;
+    cartState: object;
+    personalInfo?: object;
+    checkoutInfo?: object;
+  }): Promise<void> {
+    await request('/checkout/session', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async trackCheckoutAbandonment(sessionId: string, abandonedAtStep: number): Promise<void> {
+    await request('/checkout/abandon', {
+      method: 'POST',
+      body: JSON.stringify({ sessionId, abandonedAtStep }),
+    });
+  },
+
+  async completeCheckoutSession(sessionId: string, orderId: string): Promise<void> {
+    await request('/checkout/complete', {
+      method: 'POST',
+      body: JSON.stringify({ sessionId, orderId }),
+    });
   },
 };
 
