@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Check, Minus, Plus, Package, CreditCard, Sparkles, ShieldCheck } from 'lucide-react'
-import type { Product, CreateOrderData, OrderResult } from '../lib/api'
+import type { Product, OrderResult } from '../lib/api'
 
 // Generate unique session ID
 const generateSessionId = () => {
