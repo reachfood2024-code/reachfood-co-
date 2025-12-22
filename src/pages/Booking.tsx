@@ -1,584 +1,977 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { useLocation } from 'react-router-dom'
-import { 
-  ShoppingCart, 
-  Package, 
-  Truck, 
-  Shield, 
-  Clock, 
-  Star,
-  Check,
-  Zap,
-  Leaf,
-  Globe,
-  Heart
-} from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Check, Minus, Plus, Package, CreditCard, Sparkles, ShieldCheck } from 'lucide-react'
+import { api } from '../lib/api'
+import type { Product, CreateOrderData, OrderResult } from '../lib/api'
 
-const Booking = () => {
+// Generate unique session ID
+const generateSessionId = () => {
+  const timestamp = Date.now().toString(36)
+  const random = Math.random().toString(36).substring(2, 8)
+  return `${timestamp}-${random}`
+}
+
+// Product image mapping
+const getProductImage = (productName: string): string => {
+  if (productName.toLowerCase().includes('collagen') || productName.includes('كولاجين')) {
+    return '/images/prod7.jpg'
+  }
+  if (productName.toLowerCase().includes('protein') || productName.includes('بروتين')) {
+    return '/images/icons/3dzz.jpg'
+  }
+  return '/images/prod7.jpg' // fallback
+}
+
+export default function Booking() {
   const location = useLocation()
   const isArabic = location.pathname.startsWith('/ar')
-  const [selectedPlan, setSelectedPlan] = useState('')
-  const [orderType, setOrderType] = useState<'one-time' | 'subscription'>('subscription')
-  const [step, setStep] = useState(1)
 
-  const subscriptionPlans = [
-    {
-      id: 'emergency-prep',
-      name: isArabic ? 'الاستعداد للطوارئ' : 'Emergency Preparedness',
-      price: '$89.99',
-      period: 'monthly',
-      meals: 8,
-      description: isArabic ? 'تغذية طوارئ أساسية للعائلات والمؤسسات' : 'Essential emergency nutrition for families and organizations',
-      features: isArabic ? ['وجبات طويلة الصلاحية', 'دعم الاستجابة للطوارئ', 'مناسبة للتخزين بالجملة', 'ملصقات متعددة اللغات'] : ['High shelf-life meals', 'Emergency response support', 'Bulk storage friendly', 'Multi-language labels'],
-      icon: Shield,
-      color: 'text-red-400',
-      popular: false
-    },
-    {
-      id: 'adventure-explorer',
-      name: isArabic ? 'مستكشف المغامرة' : 'Adventure Explorer',
-      price: '$49.99',
-      period: 'monthly',
-      meals: 4,
-      description: isArabic ? 'مثالي للمغامرات الخارجية والرحلات التخييمية المنتظمة' : 'Perfect for regular outdoor adventures and camping trips',
-      features: isArabic ? ['تغليف خفيف الوزن', 'كثافة طاقة عالية', 'مقاوم للطقس', 'تخزين مدمج'] : ['Lightweight packaging', 'High energy density', 'Weather resistant', 'Compact storage'],
-      icon: Globe,
-      color: 'text-green-400',
-      popular: true
-    },
-    {
-      id: 'professional-go',
-      name: isArabic ? 'المهني أثناء التنقل' : 'Professional On-the-Go',
-      price: '$69.99',
-      period: 'monthly',
-      meals: 6,
-      description: isArabic ? 'تغذية مريحة لجدول أعمال مزدحم' : 'Convenient nutrition for busy work schedules',
-      features: isArabic ? ['تسخين مناسب للمكاتب', 'تغذية متوازنة', 'تناول سريع', 'تغليف احترافي'] : ['Office-friendly heating', 'Balanced nutrition', 'Quick consumption', 'Professional packaging'],
-      icon: Clock,
-      color: 'text-blue-400',
-      popular: false
-    },
-    {
-      id: 'family-wellness',
-      name: isArabic ? 'عافية الأسرة' : 'Family Wellness',
-      price: '$129.99',
-      period: 'monthly',
-      meals: 12,
-      description: isArabic ? 'وجبات عائلية مغذية للأسر المشغولة' : 'Nutritious family meals for busy households',
-      features: isArabic ? ['حصص بحجم عائلي', 'خيارات مناسبة للأطفال', 'نكهات تقليدية', 'وجبات قابلة للمشاركة'] : ['Family-size portions', 'Kid-friendly options', 'Traditional flavors', 'Sharing meals'],
-      icon: Heart,
-      color: 'text-purple-400',
-      popular: false
+  // State
+  const [products, setProducts] = useState<Product[]>([])
+  const [cart, setCart] = useState<Record<string, { product: Product; quantity: number }>>({})
+  const [step, setStep] = useState(0)
+  const [sessionId] = useState(() => generateSessionId())
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [orderResult, setOrderResult] = useState<OrderResult | null>(null)
+
+  // Form data
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    country: ''
+  })
+
+  // Load products on mount
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        const prods = await api.getProducts()
+        setProducts(prods)
+        await api.trackCheckoutSession({
+          sessionId,
+          currentStep: 0,
+          cartState: {}
+        })
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load products')
+      } finally {
+        setIsLoading(false)
+      }
     }
-  ]
+    loadProducts()
+  }, [sessionId])
 
-  const oneTimePacks = [
-    {
-      id: 'emergency-starter',
-      name: isArabic ? 'حزمة الطوارئ الأساسية' : 'Emergency Starter Pack',
-      price: '$49.99',
-      meals: 4,
-      description: isArabic ? '4 وجبات إغاثة طارئة للاستعداد الفوري' : '4 emergency relief meals for immediate preparedness'
-    },
-    {
-      id: 'adventure-weekend',
-      name: isArabic ? 'حزمة عطلة نهاية الأسبوع للمغامرة' : 'Adventure Weekend Pack',
-      price: '$29.99',
-      meals: 2,
-      description: isArabic ? 'وجبتان خفيفتان مثاليتان لمغامرات نهاية الأسبوع' : '2 lightweight meals perfect for weekend adventures'
-    },
-    {
-      id: 'professional-week',
-      name: isArabic ? 'حزمة أسبوع المهني' : 'Professional Week Pack',
-      price: '$39.99',
-      meals: 3,
-      description: isArabic ? '3 وجبات مناسبة للمكتب لأسابيع العمل المزدحمة' : '3 office-friendly meals for busy work weeks'
-    },
-    {
-      id: 'family-trial',
-      name: isArabic ? 'حزمة تجربة العائلة' : 'Family Trial Pack',
-      price: '$59.99',
-      meals: 5,
-      description: isArabic ? '5 وجبات عائلية لتجربة خدمتنا' : '5 family-style meals to try our service'
+  // Track abandonment
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden && step < 3) {
+        api.trackCheckoutAbandonment(sessionId, step).catch(() => {})
+      }
     }
-  ]
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [sessionId, step])
 
-  const handlePlanSelect = (planId: string) => {
-    setSelectedPlan(planId)
-    setStep(2)
+  // Track cart changes
+  useEffect(() => {
+    if (step === 0 && Object.keys(cart).length > 0) {
+      api.trackCheckoutSession({
+        sessionId,
+        currentStep: 0,
+        cartState: cart
+      }).catch(() => {})
+    }
+  }, [cart, sessionId, step])
+
+  // Calculate totals
+  const cartItems = Object.values(cart)
+  const subtotal = cartItems.reduce((sum, item) => sum + (Number(item.product.price) * item.quantity), 0)
+  const total = subtotal
+
+  // Update quantity
+  const updateQuantity = (productId: string, delta: number) => {
+    setCart(prev => {
+      const current = prev[productId]?.quantity || 0
+      const newQuantity = Math.max(0, Math.min(10, current + delta))
+
+      if (newQuantity === 0) {
+        const { [productId]: _, ...rest } = prev
+        return rest
+      }
+
+      const product = products.find(p => p.id === productId)
+      if (!product) return prev
+
+      return {
+        ...prev,
+        [productId]: { product, quantity: newQuantity }
+      }
+    })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Handlers
+  const handleContinueToPersonalInfo = async () => {
+    if (Object.keys(cart).length === 0) {
+      setError(isArabic ? 'يرجى اختيار منتج واحد على الأقل' : 'Please select at least one product')
+      return
+    }
+    setError(null)
+    setStep(1)
+    await api.trackCheckoutSession({
+      sessionId,
+      currentStep: 1,
+      cartState: cart
+    })
+  }
+
+  const handleContinueToCheckout = async () => {
+    if (!formData.fullName || !formData.email) {
+      setError(isArabic ? 'يرجى ملء جميع الحقول المطلوبة' : 'Please fill in all required fields')
+      return
+    }
+    setError(null)
+    setStep(2)
+    await api.trackCheckoutSession({
+      sessionId,
+      currentStep: 2,
+      cartState: cart,
+      personalInfo: formData
+    })
+  }
+
+  const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Order submitted:', { selectedPlan, orderType })
+    if (!formData.country) {
+      setError(isArabic ? 'يرجى إدخال البلد' : 'Please enter your country')
+      return
+    }
+
+    setIsSubmitting(true)
+    setError(null)
+
+    try {
+      const nameParts = formData.fullName.trim().split(' ')
+      const firstName = nameParts[0] || ''
+      const lastName = nameParts.slice(1).join(' ') || firstName
+
+      const orderData: CreateOrderData = {
+        customer: {
+          email: formData.email,
+          firstName,
+          lastName,
+          phone: formData.phone || undefined,
+          country: formData.country
+        },
+        orderType: 'one-time',
+        items: Object.values(cart).map(({ product, quantity }) => ({
+          productId: product.id,
+          quantity
+        })),
+        shippingAddress: { country: formData.country },
+        paymentMethod: 'cod',
+        sessionId
+      }
+
+      const result = await api.createOrder(orderData)
+      await api.completeCheckoutSession(sessionId, result.orderNumber)
+      setOrderResult(result)
+      setStep(3)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to place order')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-stone-50 via-amber-50/30 to-teal-50">
+        <style>{`
+          @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Manrope:wght@400;500;600;700&display=swap');
+        `}</style>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center"
+        >
+          <div className="relative">
+            <div className="w-20 h-20 border-4 border-teal-500/30 border-t-teal-600 rounded-full animate-spin mx-auto mb-6"></div>
+            <Sparkles className="w-8 h-8 text-teal-600 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+          </div>
+          <p className="text-stone-700 font-['Manrope'] font-medium text-lg">
+            {isArabic ? 'جاري التحضير...' : 'Preparing your experience...'}
+          </p>
+        </motion.div>
+      </div>
+    )
   }
 
   return (
-    <div className="pt-16">
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-slate-900 via-teal-900 to-slate-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div className={`min-h-screen relative overflow-hidden pt-20 md:pt-24 ${isArabic ? 'rtl' : 'ltr'}`} dir={isArabic ? 'rtl' : 'ltr'}>
+      {/* Custom Fonts */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Manrope:wght@400;500;600;700&display=swap');
+
+        body {
+          font-family: 'Manrope', sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+          font-family: 'Cormorant Garamond', serif;
+        }
+
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+          }
+          25% {
+            transform: translateY(-8px) rotate(-2deg);
+          }
+          50% {
+            transform: translateY(-15px) rotate(0deg);
+          }
+          75% {
+            transform: translateY(-8px) rotate(2deg);
+          }
+        }
+
+        .animate-float {
+          animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+          0% { background-position: -1000px 0; }
+          100% { background-position: 1000px 0; }
+        }
+
+        .animate-shimmer {
+          animation: shimmer 3s infinite;
+          background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+          background-size: 1000px 100%;
+        }
+      `}</style>
+
+      {/* Gradient Mesh Background */}
+      <div className="fixed inset-0 -z-20">
+        <div className="absolute inset-0 bg-gradient-to-br from-stone-50 via-amber-50/30 to-teal-50"></div>
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-teal-400/10 rounded-full blur-[128px] animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-orange-400/10 rounded-full blur-[128px] animate-pulse" style={{ animationDelay: '1s' }}></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 md:py-8 lg:py-12">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-8 md:mb-12 lg:mb-16 mt-2 md:mt-4"
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', duration: 0.6 }}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-emerald-500 text-white px-4 py-2 md:px-6 md:py-2 rounded-full mb-4 md:mb-6 shadow-lg"
+          >
+            <Sparkles className="w-3 h-3 md:w-4 md:h-4" />
+            <span className="font-['Manrope'] font-semibold text-xs md:text-sm uppercase tracking-wider">
+              {isArabic ? 'تجربة تسوق مميزة' : 'Premium Shopping Experience'}
+            </span>
+          </motion.div>
+
+          <h1 className="font-['Cormorant_Garamond'] text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-stone-900 mb-3 md:mb-4 leading-tight px-2">
+            {isArabic ? 'اختر صحتك' : 'Choose Your Wellness'}
+          </h1>
+          <p className="font-['Manrope'] text-sm sm:text-base md:text-lg lg:text-xl text-stone-600 max-w-2xl mx-auto leading-relaxed px-4">
+            {isArabic
+              ? 'وجبات ذاتية التسخين مدعمة بالمغذيات الحيوية لأسلوب حياة نشط'
+              : 'Self-heating meals fortified with bio-nutrients for an active lifestyle'
+            }
+          </p>
+        </motion.div>
+
+        {/* Progress Steps */}
+        {step < 3 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            className="max-w-3xl mx-auto mb-6 md:mb-8 lg:mb-12 px-2"
           >
-            <div className="flex items-center justify-center mb-6">
-              <Zap className="w-8 h-8 text-teal-400 mr-3" />
-              <span className="text-teal-400 font-semibold text-lg">
-                {isArabic ? 'توصيل وجبات ثوري' : 'Revolutionary Meal Delivery'}
-              </span>
-            </div>
-            
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">{isArabic ? 'اطلب وجباتك' : 'Order Your Meals'}</h1>
-            <p className="text-xl text-teal-100 max-w-4xl mx-auto leading-relaxed">
-              {isArabic ? 'اختر من خطط الاشتراك للتسليم المنتظم أو اطلب حزم وجبات فردية. تغذية ساخنة، مستدامة، وأصيلة ثقافياً تُسلم إلى باب منزلك.' : 'Choose from our subscription plans for regular delivery or order individual meal packs. Hot, sustainable, and culturally authentic nutrition delivered to your door.'}
-            </p>
-          </motion.div>
-        </div>
-      </section>
+            <div className="relative flex justify-between items-center">
+              {/* Progress Bar Background */}
+              <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-stone-200 -translate-y-1/2"></div>
 
-      {/* Order Type Selection */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-slate-900 mb-4">
-              {isArabic ? 'كيف تود الطلب؟' : 'How would you like to order?'}
-            </h2>
-          </motion.div>
+              {/* Progress Bar Fill */}
+              <motion.div
+                className="absolute top-1/2 left-0 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 -translate-y-1/2 rounded-full"
+                initial={{ width: '0%' }}
+                animate={{ width: step === 0 ? '0%' : step === 1 ? '50%' : '100%' }}
+                transition={{ duration: 0.5, ease: 'easeInOut' }}
+              ></motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className={`border-2 rounded-xl p-6 cursor-pointer transition-all ${
-                orderType === 'subscription' 
-                  ? 'border-teal-500 bg-teal-50' 
-                  : 'border-slate-200 hover:border-teal-300'
-              }`}
-              onClick={() => setOrderType('subscription')}
-            >
-              <div className="text-center">
-                <Package className="w-12 h-12 text-teal-500 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-900 mb-2">{isArabic ? 'خطط الاشتراك' : 'Subscription Plans'}</h3>
-                <p className="text-slate-600 mb-4">
-                  {isArabic ? 'تسليم منتظم لوجبات ملائمة لنمط حياتك مع جدولة مرنة وتوفير' : 'Regular delivery of meals tailored to your lifestyle with flexible scheduling and savings'}
-                </p>
-                <div className="flex items-center justify-center space-x-4 text-sm text-slate-500">
-                  <span className="flex items-center">
-                    <Check className="w-4 h-4 mr-1 text-green-500" />
-                    {isArabic ? 'وفر حتى 20%' : 'Save up to 20%'}
-                  </span>
-                  <span className="flex items-center">
-                    <Check className="w-4 h-4 mr-1 text-green-500" />
-                    {isArabic ? 'يمكن التخطي في أي وقت' : 'Skip anytime'}
-                  </span>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className={`border-2 rounded-xl p-6 cursor-pointer transition-all ${
-                orderType === 'one-time' 
-                  ? 'border-teal-500 bg-teal-50' 
-                  : 'border-slate-200 hover:border-teal-300'
-              }`}
-              onClick={() => setOrderType('one-time')}
-            >
-              <div className="text-center">
-                <ShoppingCart className="w-12 h-12 text-teal-500 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-900 mb-2">{isArabic ? 'شراء مرة واحدة' : 'One-Time Purchase'}</h3>
-                <p className="text-slate-600 mb-4">
-                  {isArabic ? 'مثالي لتجربة وجباتنا أو التخزين لاحتياجات ومناسبات محددة' : 'Perfect for trying our meals or stocking up for specific needs and occasions'}
-                </p>
-                <div className="flex items-center justify-center space-x-4 text-sm text-slate-500">
-                  <span className="flex items-center">
-                    <Check className="w-4 h-4 mr-1 text-green-500" />
-                    {isArabic ? 'بدون التزام' : 'No commitment'}
-                  </span>
-                  <span className="flex items-center">
-                    <Check className="w-4 h-4 mr-1 text-green-500" />
-                    {isArabic ? 'تسليم فوري' : 'Instant delivery'}
-                  </span>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Progress Bar */}
-          <div className="mb-12">
-            <div className="flex items-center justify-between mb-4">
-              {[1, 2, 3].map((stepNumber) => (
-                <div
-                  key={stepNumber}
-                  className={`flex items-center ${
-                    stepNumber < 3 ? 'flex-1' : ''
-                  }`}
+              {/* Steps */}
+              {[
+                { num: 0, label: isArabic ? 'المنتجات' : 'Products', icon: Package },
+                { num: 1, label: isArabic ? 'المعلومات' : 'Details', icon: Check },
+                { num: 2, label: isArabic ? 'الدفع' : 'Payment', icon: CreditCard }
+              ].map((s, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="relative z-10 flex flex-col items-center gap-1 md:gap-2"
                 >
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-                      step >= stepNumber
-                        ? 'bg-teal-500 text-white'
-                        : 'bg-slate-200 text-slate-400'
-                    }`}
-                  >
-                    {stepNumber}
+                  <div className={`w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center font-['Manrope'] font-bold text-sm md:text-lg transition-all duration-300 ${
+                    step >= s.num
+                      ? 'bg-gradient-to-br from-teal-500 to-emerald-600 text-white shadow-lg shadow-teal-500/50'
+                      : 'bg-white border-2 border-stone-200 text-stone-400'
+                  }`}>
+                    {step > s.num ? <s.icon className="w-4 h-4 md:w-6 md:h-6" /> : s.num + 1}
                   </div>
-                  {stepNumber < 3 && (
-                    <div
-                      className={`flex-1 h-1 mx-2 ${
-                        step > stepNumber ? 'bg-teal-500' : 'bg-slate-200'
-                      }`}
-                    />
-                  )}
-                </div>
+                  <span className={`font-['Manrope'] text-xs md:text-sm font-medium ${
+                    step >= s.num ? 'text-teal-600' : 'text-stone-400'
+                  }`}>
+                    {s.label}
+                  </span>
+                </motion.div>
               ))}
             </div>
-            <div className="flex justify-between text-sm text-slate-500">
-              <span>{isArabic ? 'اختر الخطة' : 'Select Plan'}</span>
-              <span>{isArabic ? 'تخصيص' : 'Customize'}</span>
-              <span>{isArabic ? 'الدفع' : 'Checkout'}</span>
-            </div>
-          </div>
+          </motion.div>
+        )}
 
-          {/* Step 1: Plan Selection */}
-          {step === 1 && (
+        {/* Error Message */}
+        <AnimatePresence>
+          {error && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="space-y-6"
+              exit={{ opacity: 0, y: -10 }}
+              className="max-w-3xl mx-auto mb-6 bg-red-50 border border-red-200 rounded-2xl p-4 text-red-700 font-['Manrope']"
             >
-              <h2 className="text-2xl font-serif font-bold text-slate-900 mb-8 text-center">
-                {orderType === 'subscription' ? (isArabic ? 'اختر خطة الاشتراك' : 'Choose Your Subscription Plan') : (isArabic ? 'اختر حزمة وجبات' : 'Select a Meal Pack')}
-              </h2>
-              
-              {orderType === 'subscription' ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {subscriptionPlans.map((plan) => {
-                    const IconComponent = plan.icon
-                    return (
+              {error}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Step 0: Product Selection */}
+        {step === 0 && (
+          <div className="grid lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+            {/* Products Grid */}
+            <div className="lg:col-span-2 space-y-4 md:space-y-6">
+              {products.map((product, idx) => {
+                const quantity = cart[product.id]?.quantity || 0
+                const productImage = getProductImage(isArabic ? product.nameAr : product.nameEn)
+
+                return (
+                  <motion.div
+                    key={product.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                    className={`group relative bg-white/80 backdrop-blur-sm rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 ${
+                      quantity > 0 ? 'ring-2 ring-teal-500 ring-offset-4' : ''
+                    }`}
+                  >
+                    {/* Shimmer effect on hover */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                      <div className="absolute inset-0 animate-shimmer"></div>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6 lg:p-8 relative z-10">
+                      {/* Product Image */}
                       <motion.div
-                        key={plan.id}
-                        whileHover={{ scale: 1.02, y: -5 }}
-                        whileTap={{ scale: 0.98 }}
-                        className={`relative border-2 rounded-xl p-6 cursor-pointer transition-all ${
-                          plan.popular 
-                            ? 'border-teal-500 shadow-lg' 
-                            : 'border-slate-200 hover:border-teal-300'
-                        }`}
-                        onClick={() => handlePlanSelect(plan.id)}
+                        whileHover={{ scale: 1.05, rotate: 2 }}
+                        className="relative w-full md:w-48 h-40 md:h-48 flex-shrink-0 rounded-2xl overflow-hidden bg-gradient-to-br from-teal-50 to-amber-50 shadow-inner"
                       >
-                        {plan.popular && (
-                          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                            <span className="bg-teal-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                              {isArabic ? 'الأكثر شعبية' : 'Most Popular'}
-                            </span>
+                        <img
+                          src={productImage}
+                          alt={isArabic ? product.nameAr : product.nameEn}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect fill="%2314b8a6" width="200" height="200"/%3E%3Ctext fill="%23ffffff" font-family="Arial" font-size="24" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EProduct%3C/text%3E%3C/svg%3E'
+                          }}
+                        />
+
+                        {/* Badge */}
+                        {product.badgeEn && (
+                          <div className="absolute top-3 right-3 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-['Manrope'] font-semibold shadow-lg">
+                            {isArabic ? product.badgeAr : product.badgeEn}
                           </div>
                         )}
-                        
-                        <div className="text-center">
-                          <IconComponent className={`w-12 h-12 ${plan.color} mx-auto mb-4`} />
-                          <h3 className="text-xl font-semibold text-slate-900 mb-2">{plan.name}</h3>
-                          <div className="flex items-center justify-center space-x-2 mb-4">
-                            <span className="text-3xl font-bold text-teal-600">{plan.price}</span>
-                            <span className="text-slate-500">/{plan.period}</span>
-                          </div>
-                          <div className="text-slate-600 mb-4">
-                            {isArabic ? `${plan.meals} وجبة متضمنة` : `${plan.meals} meals included`}
-                          </div>
-                          <p className="text-slate-600 mb-6 text-sm">{plan.description}</p>
-                          
-                          <div className="space-y-2">
-                            {plan.features.map((feature, index) => (
-                              <div key={index} className="flex items-center space-x-2 text-sm">
-                                <Check className="w-4 h-4 text-teal-500 flex-shrink-0" />
-                                <span className="text-slate-700">{feature}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
+
+                        {/* Quantity Badge */}
+                        {quantity > 0 && (
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="absolute top-3 left-3 bg-teal-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-['Manrope'] font-bold shadow-lg"
+                          >
+                            {quantity}
+                          </motion.div>
+                        )}
                       </motion.div>
-                    )
-                  })}
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {oneTimePacks.map((pack) => (
-                    <motion.div
-                      key={pack.id}
-                      whileHover={{ scale: 1.02, y: -5 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="border-2 border-slate-200 hover:border-teal-300 rounded-xl p-6 cursor-pointer transition-all"
-                      onClick={() => handlePlanSelect(pack.id)}
-                    >
-                      <div className="text-center">
-                        <Package className="w-12 h-12 text-teal-500 mx-auto mb-4" />
-                        <h3 className="text-xl font-semibold text-slate-900 mb-2">{pack.name}</h3>
-                        <div className="flex items-center justify-center space-x-2 mb-4">
-                          <span className="text-3xl font-bold text-teal-600">{pack.price}</span>
+
+                      {/* Product Details */}
+                      <div className="flex-1 flex flex-col">
+                        <div className="flex-1">
+                          <h3 className="font-['Cormorant_Garamond'] text-2xl md:text-3xl lg:text-4xl font-bold text-stone-900 mb-2">
+                            {isArabic ? product.nameAr : product.nameEn}
+                          </h3>
+
+                          <div className="flex items-baseline gap-2 md:gap-3 mb-3 md:mb-4">
+                            <span className="font-['Cormorant_Garamond'] text-3xl md:text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">
+                              ${Number(product.price).toFixed(2)}
+                            </span>
+                            {product.originalPrice && (
+                              <span className="font-['Manrope'] text-lg text-stone-400 line-through">
+                                ${Number(product.originalPrice).toFixed(2)}
+                              </span>
+                            )}
+                          </div>
+
+                          {product.descriptionEn && (
+                            <p className="font-['Manrope'] text-stone-600 text-sm leading-relaxed mb-4 line-clamp-2">
+                              {isArabic ? product.descriptionAr : product.descriptionEn}
+                            </p>
+                          )}
+
+                          {/* Features */}
+                          {product.featuresEn && product.featuresEn.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              {(isArabic ? product.featuresAr : product.featuresEn).slice(0, 3).map((feature, idx) => (
+                                <span
+                                  key={idx}
+                                  className="inline-flex items-center gap-1 text-xs font-['Manrope'] text-teal-700 bg-teal-50 px-3 py-1 rounded-full"
+                                >
+                                  <Check className="w-3 h-3" />
+                                  {feature}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                        <div className="text-slate-600 mb-4">
-                          {isArabic ? `${pack.meals} وجبة متضمنة` : `${pack.meals} meals included`}
+
+                        {/* Quantity Controls */}
+                        <div className="flex items-center gap-3 md:gap-4">
+                          <div className="flex items-center gap-1 md:gap-2 bg-stone-100 rounded-full p-1">
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              onClick={() => updateQuantity(product.id, -1)}
+                              disabled={quantity === 0}
+                              className="w-11 h-11 md:w-10 md:h-10 rounded-full bg-white hover:bg-teal-500 hover:text-white text-stone-700 flex items-center justify-center transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm touch-manipulation active:scale-90"
+                            >
+                              <Minus className="w-4 h-4" />
+                            </motion.button>
+
+                            <span className="font-['Manrope'] font-bold text-lg md:text-xl text-stone-900 w-10 md:w-12 text-center">
+                              {quantity}
+                            </span>
+
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              onClick={() => updateQuantity(product.id, 1)}
+                              disabled={quantity >= 10}
+                              className="w-11 h-11 md:w-10 md:h-10 rounded-full bg-white hover:bg-teal-500 hover:text-white text-stone-700 flex items-center justify-center transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm touch-manipulation active:scale-90"
+                            >
+                              <Plus className="w-4 h-4" />
+                            </motion.button>
+                          </div>
+
+                          {quantity > 0 && (
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              className="flex-1 bg-gradient-to-r from-teal-50 to-emerald-50 rounded-full px-4 py-2"
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="font-['Manrope'] text-sm text-stone-600">
+                                  {isArabic ? 'المجموع' : 'Subtotal'}
+                                </span>
+                                <span className="font-['Cormorant_Garamond'] text-xl font-bold text-teal-600">
+                                  ${(Number(product.price) * quantity).toFixed(2)}
+                                </span>
+                              </div>
+                            </motion.div>
+                          )}
                         </div>
-                        <p className="text-slate-600 text-sm">{pack.description}</p>
                       </div>
-                    </motion.div>
+                    </div>
+                  </motion.div>
+                )
+              })}
+            </div>
+
+            {/* Floating Cart Summary */}
+            <div className="lg:col-span-1">
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="lg:sticky lg:top-24"
+              >
+                <div className="relative bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-teal-100">
+                  {/* Decorative gradient */}
+                  <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-500"></div>
+
+                  <div className="p-4 md:p-6">
+                    <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center">
+                        <Package className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                      </div>
+                      <h3 className="font-['Cormorant_Garamond'] text-xl md:text-2xl font-bold text-stone-900">
+                        {isArabic ? 'سلة التسوق' : 'Your Cart'}
+                      </h3>
+                    </div>
+
+                    {cartItems.length === 0 ? (
+                      <div className="text-center py-8 md:py-12">
+                        <Package className="w-12 h-12 md:w-16 md:h-16 text-stone-300 mx-auto mb-3 md:mb-4" />
+                        <p className="font-['Manrope'] text-sm md:text-base text-stone-500">
+                          {isArabic ? 'السلة فارغة' : 'Cart is empty'}
+                        </p>
+                        <p className="font-['Manrope'] text-xs md:text-sm text-stone-400 mt-2">
+                          {isArabic ? 'أضف منتجات لبدء الطلب' : 'Add products to get started'}
+                        </p>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="space-y-3 md:space-y-4 mb-4 md:mb-6">
+                          {cartItems.map(({ product, quantity }) => (
+                            <motion.div
+                              key={product.id}
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              className="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-stone-50 rounded-2xl"
+                            >
+                              <div className="w-14 h-14 md:w-16 md:h-16 rounded-xl overflow-hidden bg-gradient-to-br from-teal-50 to-amber-50 flex-shrink-0">
+                                <img
+                                  src={getProductImage(isArabic ? product.nameAr : product.nameEn)}
+                                  alt={isArabic ? product.nameAr : product.nameEn}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="64" height="64"%3E%3Crect fill="%2314b8a6" width="64" height="64"/%3E%3C/svg%3E'
+                                  }}
+                                />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-['Manrope'] font-semibold text-stone-900 text-sm truncate">
+                                  {isArabic ? product.nameAr : product.nameEn}
+                                </p>
+                                <p className="font-['Manrope'] text-xs text-stone-500">
+                                  {quantity} × ${Number(product.price).toFixed(2)}
+                                </p>
+                              </div>
+                              <div className="font-['Cormorant_Garamond'] text-lg font-bold text-teal-600">
+                                ${(Number(product.price) * quantity).toFixed(2)}
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+
+                        <div className="space-y-3 mb-6 p-4 bg-gradient-to-br from-stone-50 to-teal-50/30 rounded-2xl">
+                          <div className="flex justify-between font-['Manrope'] text-stone-600">
+                            <span>{isArabic ? 'المجموع الفرعي' : 'Subtotal'}</span>
+                            <span className="font-semibold">${subtotal.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between font-['Manrope'] text-stone-600">
+                            <span>{isArabic ? 'الشحن' : 'Shipping'}</span>
+                            <span className="font-semibold text-emerald-600">{isArabic ? 'مجاني' : 'FREE'}</span>
+                          </div>
+                          <div className="pt-3 border-t border-stone-200 flex justify-between items-center">
+                            <span className="font-['Cormorant_Garamond'] text-xl font-bold text-stone-900">
+                              {isArabic ? 'الإجمالي' : 'Total'}
+                            </span>
+                            <span className="font-['Cormorant_Garamond'] text-3xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">
+                              ${total.toFixed(2)}
+                            </span>
+                          </div>
+                        </div>
+
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={handleContinueToPersonalInfo}
+                          className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-['Manrope'] font-semibold py-3 md:py-4 text-sm md:text-base rounded-2xl shadow-lg shadow-teal-500/30 transition-all duration-300 active:scale-95 touch-manipulation"
+                        >
+                          {isArabic ? 'متابعة الطلب' : 'Continue to Checkout'}
+                        </motion.button>
+
+                        <div className="mt-3 md:mt-4 flex items-center justify-center gap-2 text-stone-500 text-xs font-['Manrope']">
+                          <ShieldCheck className="w-3 h-3 md:w-4 md:h-4" />
+                          <span>{isArabic ? 'دفع آمن ومضمون' : 'Secure & Protected Payment'}</span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 1: Personal Info */}
+        {step === 1 && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="max-w-4xl mx-auto grid md:grid-cols-3 gap-8"
+          >
+            <div className="md:col-span-2">
+              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-teal-100">
+                <h2 className="font-['Cormorant_Garamond'] text-4xl font-bold text-stone-900 mb-2">
+                  {isArabic ? 'معلوماتك الشخصية' : 'Your Information'}
+                </h2>
+                <p className="font-['Manrope'] text-stone-600 mb-8">
+                  {isArabic ? 'نحتاج بعض التفاصيل لإتمام طلبك' : 'We need a few details to complete your order'}
+                </p>
+
+                <form onSubmit={(e) => { e.preventDefault(); handleContinueToCheckout(); }} className="space-y-6">
+                  <div>
+                    <label className="block font-['Manrope'] font-semibold text-stone-700 mb-2">
+                      {isArabic ? 'الاسم الكامل' : 'Full Name'} <span className="text-orange-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.fullName}
+                      onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
+                      className="w-full px-6 py-4 bg-stone-50 border-2 border-stone-200 rounded-2xl focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 transition-all outline-none font-['Manrope']"
+                      placeholder={isArabic ? 'أدخل اسمك الكامل' : 'Enter your full name'}
+                      required
+                    />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block font-['Manrope'] font-semibold text-stone-700 mb-2">
+                        {isArabic ? 'البريد الإلكتروني' : 'Email'} <span className="text-orange-500">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                        className="w-full px-6 py-4 bg-stone-50 border-2 border-stone-200 rounded-2xl focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 transition-all outline-none font-['Manrope']"
+                        placeholder="you@example.com"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-['Manrope'] font-semibold text-stone-700 mb-2">
+                        {isArabic ? 'رقم الهاتف' : 'Phone'} <span className="text-stone-400 text-sm">({isArabic ? 'اختياري' : 'optional'})</span>
+                      </label>
+                      <input
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                        className="w-full px-6 py-4 bg-stone-50 border-2 border-stone-200 rounded-2xl focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 transition-all outline-none font-['Manrope']"
+                        placeholder="+962 XX XXX XXXX"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 pt-4">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="button"
+                      onClick={() => setStep(0)}
+                      className="flex-1 bg-stone-100 hover:bg-stone-200 text-stone-700 font-['Manrope'] font-semibold py-4 rounded-2xl transition-all"
+                    >
+                      {isArabic ? 'رجوع' : 'Back'}
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="submit"
+                      className="flex-1 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-['Manrope'] font-semibold py-4 rounded-2xl shadow-lg shadow-teal-500/30 transition-all"
+                    >
+                      {isArabic ? 'متابعة' : 'Continue'}
+                    </motion.button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            {/* Mini Cart Summary */}
+            <div className="md:col-span-1">
+              <div className="sticky top-8 bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl p-6 border border-teal-100">
+                <h3 className="font-['Cormorant_Garamond'] text-2xl font-bold text-stone-900 mb-4">
+                  {isArabic ? 'ملخص الطلب' : 'Order Summary'}
+                </h3>
+                <div className="space-y-3 mb-4">
+                  {cartItems.map(({ product, quantity }) => (
+                    <div key={product.id} className="flex justify-between text-sm font-['Manrope']">
+                      <span className="text-stone-600">
+                        {isArabic ? product.nameAr : product.nameEn} × {quantity}
+                      </span>
+                      <span className="font-semibold text-stone-900">
+                        ${(Number(product.price) * quantity).toFixed(2)}
+                      </span>
+                    </div>
                   ))}
                 </div>
-              )}
-            </motion.div>
-          )}
-
-          {/* Step 2: Customization */}
-          {step === 2 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-6"
-            >
-              <h2 className="text-2xl font-serif font-bold text-slate-900 mb-8 text-center">
-                {isArabic ? 'خصص طلبك' : 'Customize Your Order'}
-              </h2>
-              
-              <div className="bg-slate-50 rounded-xl p-6 mb-8">
-                <h3 className="text-lg font-semibold text-slate-900 mb-4">{isArabic ? 'الخطة المختارة' : 'Selected Plan'}</h3>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-700">
-                    {orderType === 'subscription' 
-                      ? subscriptionPlans.find(p => p.id === selectedPlan)?.name
-                      : oneTimePacks.find(p => p.id === selectedPlan)?.name
-                    }
-                  </span>
-                  <span className="text-teal-600 font-bold">
-                    {orderType === 'subscription' 
-                      ? subscriptionPlans.find(p => p.id === selectedPlan)?.price
-                      : oneTimePacks.find(p => p.id === selectedPlan)?.price
-                    }
-                  </span>
+                <div className="pt-4 border-t border-stone-200">
+                  <div className="flex justify-between items-center">
+                    <span className="font-['Cormorant_Garamond'] text-xl font-bold text-stone-900">
+                      {isArabic ? 'الإجمالي' : 'Total'}
+                    </span>
+                    <span className="font-['Cormorant_Garamond'] text-2xl font-bold text-teal-600">
+                      ${total.toFixed(2)}
+                    </span>
+                  </div>
                 </div>
               </div>
-
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-slate-700 font-medium mb-2">{isArabic ? 'تكرار التسليم' : 'Delivery Frequency'}</label>
-                  <select className="w-full p-3 border border-slate-300 rounded-lg focus:border-teal-500 focus:outline-none bg-white text-slate-900">
-                    <option>{isArabic ? 'كل 4 أسابيع' : 'Every 4 weeks'}</option>
-                    <option>{isArabic ? 'كل 6 أسابيع' : 'Every 6 weeks'}</option>
-                    <option>{isArabic ? 'كل 8 أسابيع' : 'Every 8 weeks'}</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-slate-700 font-medium mb-2">{isArabic ? 'تفضيلات غذائية' : 'Dietary Preferences'}</label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {(isArabic ? ['حلال', 'نباتي', 'نباتي صرف', 'خالٍ من الغلوتين'] : ['Halal', 'Vegetarian', 'Vegan', 'Gluten-Free']).map((diet) => (
-                      <label key={diet} className="flex items-center space-x-2">
-                        <input type="checkbox" className="text-teal-500" />
-                        <span className="text-slate-700">{diet}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-slate-700 font-medium mb-2">{isArabic ? 'تعليمات خاصة' : 'Special Instructions'}</label>
-                  <textarea
-                    className="w-full p-3 border border-slate-300 rounded-lg focus:border-teal-500 focus:outline-none bg-white text-slate-900"
-                    rows={3}
-                    placeholder={isArabic ? 'أي احتياجات غذائية خاصة أو تعليمات تسليم...' : 'Any special dietary needs or delivery instructions...'}
-                  />
-                </div>
-              </div>
-
-              <button
-                onClick={() => setStep(3)}
-                className="w-full bg-gradient-to-r from-teal-500 to-teal-600 text-white font-semibold py-4 rounded-lg hover:from-teal-600 hover:to-teal-700 transition-all"
-              >
-                {isArabic ? 'متابعة إلى الدفع' : 'Continue to Checkout'}
-              </button>
-            </motion.div>
-          )}
-
-          {/* Step 3: Checkout */}
-          {step === 3 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-6"
-            >
-              <h2 className="text-2xl font-serif font-bold text-slate-900 mb-8 text-center">
-                {isArabic ? 'أكمل طلبك' : 'Complete Your Order'}
-              </h2>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-slate-700 font-medium mb-2">{isArabic ? 'الاسم الكامل' : 'Full Name'}</label>
-                    <input
-                      type="text"
-                      required
-                      className="w-full p-3 border border-slate-300 rounded-lg focus:border-teal-500 focus:outline-none bg-white text-slate-900"
-                      placeholder={isArabic ? 'الاسم الكامل' : 'Your full name'}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-slate-700 font-medium mb-2">{isArabic ? 'البريد الإلكتروني' : 'Email'}</label>
-                    <input
-                      type="email"
-                      required
-                      className="w-full p-3 border border-slate-300 rounded-lg focus:border-teal-500 focus:outline-none bg-white text-slate-900"
-                      placeholder={isArabic ? 'your@email.com' : 'your@email.com'}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-slate-700 font-medium mb-2">{isArabic ? 'رقم الهاتف' : 'Phone Number'}</label>
-                    <input
-                      type="tel"
-                      required
-                      className="w-full p-3 border border-slate-300 rounded-lg focus:border-teal-500 focus:outline-none bg-white text-slate-900"
-                      placeholder={isArabic ? '+962 7X XXX XXXX' : '+1 (555) 123-4567'}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-slate-700 font-medium mb-2">{isArabic ? 'عنوان التسليم' : 'Delivery Address'}</label>
-                    <input
-                      type="text"
-                      required
-                      className="w-full p-3 border border-slate-300 rounded-lg focus:border-teal-500 focus:outline-none bg-white text-slate-900"
-                      placeholder={isArabic ? 'عنوان الشارع' : 'Street address'}
-                    />
-                  </div>
-                </div>
-
-                <div className="bg-slate-50 rounded-xl p-6">
-                  <h3 className="text-lg font-semibold text-slate-900 mb-4">{isArabic ? 'ملخص الطلب' : 'Order Summary'}</h3>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>{isArabic ? 'الخطة:' : 'Plan:'}</span>
-                      <span>
-                        {orderType === 'subscription' 
-                          ? subscriptionPlans.find(p => p.id === selectedPlan)?.name
-                          : oneTimePacks.find(p => p.id === selectedPlan)?.name
-                        }
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>{isArabic ? 'الوجبات:' : 'Meals:'}</span>
-                      <span>
-                        {orderType === 'subscription' 
-                          ? subscriptionPlans.find(p => p.id === selectedPlan)?.meals
-                          : oneTimePacks.find(p => p.id === selectedPlan)?.meals
-                        } {isArabic ? 'وجبة' : 'meals'}
-                      </span>
-                    </div>
-                    <div className="border-t pt-2 flex justify-between font-bold">
-                      <span>{isArabic ? 'الإجمالي:' : 'Total:'}</span>
-                      <span>
-                        {orderType === 'subscription' 
-                          ? subscriptionPlans.find(p => p.id === selectedPlan)?.price
-                          : oneTimePacks.find(p => p.id === selectedPlan)?.price
-                        }
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <button type="submit" className="w-full bg-gradient-to-r from-teal-500 to-teal-600 text-white font-semibold py-4 rounded-lg hover:from-teal-600 hover:to-teal-700 transition-all">
-                  {isArabic ? 'إتمام الطلب' : 'Complete Order'}
-                </button>
-              </form>
-            </motion.div>
-          )}
-
-          {/* Navigation */}
-          {step > 1 && (
-            <div className="flex justify-between mt-8">
-              <button
-                onClick={() => setStep(step - 1)}
-                className="border-2 border-slate-300 text-slate-700 px-6 py-2 rounded-lg hover:border-slate-400 transition-colors"
-              >
-                {isArabic ? 'رجوع' : 'Back'}
-              </button>
             </div>
-          )}
-        </div>
-      </section>
-
-      {/* Benefits Section */}
-      <section className="py-20 bg-gradient-to-br from-slate-900 via-teal-900 to-slate-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
-              {isArabic ? 'لماذا تختار REACHFOOD؟' : (<>Why Choose R<span className="text-orange-400">E</span>ACHF<span className="text-orange-400">OO</span>D?</>)}
-            </h2>
-            <p className="text-xl text-teal-100 max-w-4xl mx-auto leading-relaxed">
-              {isArabic ? 'أكثر من مجرد راحة - نحن ملتزمون بتغذيتك وكوكبنا' : "More than just convenience - we're committed to your nutrition and our planet"}
-            </p>
           </motion.div>
+        )}
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[
-              {
-                icon: Truck,
-                title: isArabic ? 'شحن مجاني' : 'Free Shipping',
-                description: isArabic ? 'توصيل مجاني لجميع خطط الاشتراك' : 'Free delivery on all subscription plans',
-                color: 'text-blue-400'
-              },
-              {
-                icon: Shield,
-                title: isArabic ? 'ضمان الجودة' : 'Quality Guarantee',
-                description: isArabic ? 'رضا 100% أو استرداد أموالك' : '100% satisfaction or your money back',
-                color: 'text-green-400'
-              },
-              {
-                icon: Leaf,
-                title: isArabic ? 'مستدام' : 'Sustainable',
-                description: isArabic ? 'تغليف قابل للزراعة يتحول إلى أعشاب' : 'Plantable packaging that grows into herbs',
-                color: 'text-teal-400'
-              },
-              {
-                icon: Star,
-                title: isArabic ? 'جودة فاخرة' : 'Premium Quality',
-                description: isArabic ? 'وجبات بجودة المطاعم بنكهات أصيلة' : 'Restaurant-quality meals with authentic flavors',
-                color: 'text-yellow-400'
-              }
-            ].map((benefit, index) => {
-              const IconComponent = benefit.icon
-              return (
+        {/* Step 2: Checkout */}
+        {step === 2 && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="max-w-4xl mx-auto grid md:grid-cols-3 gap-8"
+          >
+            <div className="md:col-span-2">
+              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-teal-100">
+                <h2 className="font-['Cormorant_Garamond'] text-4xl font-bold text-stone-900 mb-2">
+                  {isArabic ? 'إتمام الطلب' : 'Complete Your Order'}
+                </h2>
+                <p className="font-['Manrope'] text-stone-600 mb-8">
+                  {isArabic ? 'خطوة أخيرة قبل استلام طلبك' : 'One final step before your order arrives'}
+                </p>
+
+                <form onSubmit={handlePlaceOrder} className="space-y-6">
+                  <div>
+                    <label className="block font-['Manrope'] font-semibold text-stone-700 mb-2">
+                      {isArabic ? 'البلد' : 'Country'} <span className="text-orange-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.country}
+                      onChange={(e) => setFormData(prev => ({ ...prev, country: e.target.value }))}
+                      className="w-full px-6 py-4 bg-stone-50 border-2 border-stone-200 rounded-2xl focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 transition-all outline-none font-['Manrope']"
+                      placeholder={isArabic ? 'أدخل اسم البلد' : 'Enter your country'}
+                      required
+                    />
+                  </div>
+
+                  {/* Payment Method */}
+                  <div className="relative bg-gradient-to-br from-teal-50 to-emerald-50 border-2 border-teal-200 rounded-3xl p-6 overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-teal-400/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+                    <div className="relative flex items-start gap-4">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-600 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg animate-float">
+                        <CreditCard className="w-7 h-7 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-['Cormorant_Garamond'] text-2xl font-bold text-stone-900 mb-1">
+                          {isArabic ? 'الدفع عند الاستلام' : 'Cash on Delivery'}
+                        </h3>
+                        <p className="font-['Manrope'] text-stone-600 text-sm">
+                          {isArabic ? 'ادفع نقداً عند استلام طلبك بأمان' : 'Pay securely in cash when you receive your order'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Order Summary Box */}
+                  <div className="bg-stone-50 rounded-3xl p-6 border border-stone-200">
+                    <h4 className="font-['Cormorant_Garamond'] text-2xl font-bold text-stone-900 mb-4">
+                      {isArabic ? 'تفاصيل الطلب' : 'Order Details'}
+                    </h4>
+                    <div className="space-y-3 mb-4">
+                      {cartItems.map(({ product, quantity }) => (
+                        <div key={product.id} className="flex justify-between font-['Manrope']">
+                          <span className="text-stone-600">
+                            {isArabic ? product.nameAr : product.nameEn} × {quantity}
+                          </span>
+                          <span className="font-semibold text-stone-900">
+                            ${(Number(product.price) * quantity).toFixed(2)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="border-t-2 border-stone-300 pt-4 space-y-2">
+                      <div className="flex justify-between font-['Manrope'] text-stone-600">
+                        <span>{isArabic ? 'المجموع الفرعي' : 'Subtotal'}</span>
+                        <span className="font-semibold">${subtotal.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between font-['Manrope'] text-stone-600">
+                        <span>{isArabic ? 'الشحن' : 'Shipping'}</span>
+                        <span className="font-semibold text-emerald-600">{isArabic ? 'مجاني' : 'FREE'}</span>
+                      </div>
+                      <div className="flex justify-between items-center pt-3 border-t border-stone-300">
+                        <span className="font-['Cormorant_Garamond'] text-2xl font-bold text-stone-900">
+                          {isArabic ? 'الإجمالي' : 'Total'}
+                        </span>
+                        <span className="font-['Cormorant_Garamond'] text-3xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">
+                          ${total.toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 pt-4">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="button"
+                      onClick={() => setStep(1)}
+                      disabled={isSubmitting}
+                      className="flex-1 bg-stone-100 hover:bg-stone-200 text-stone-700 font-['Manrope'] font-semibold py-4 rounded-2xl transition-all disabled:opacity-50"
+                    >
+                      {isArabic ? 'رجوع' : 'Back'}
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="flex-1 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-['Manrope'] font-semibold py-4 rounded-2xl shadow-lg shadow-teal-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isSubmitting
+                        ? (isArabic ? 'جاري المعالجة...' : 'Processing...')
+                        : (isArabic ? 'تأكيد الطلب' : 'Place Order')
+                      }
+                    </motion.button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            {/* Mini Cart Summary */}
+            <div className="md:col-span-1">
+              <div className="sticky top-8 bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl p-6 border border-teal-100">
+                <h3 className="font-['Cormorant_Garamond'] text-2xl font-bold text-stone-900 mb-4">
+                  {isArabic ? 'ملخص الطلب' : 'Order Summary'}
+                </h3>
+                <div className="space-y-3 mb-4">
+                  {cartItems.map(({ product, quantity }) => (
+                    <div key={product.id} className="flex justify-between text-sm font-['Manrope']">
+                      <span className="text-stone-600">
+                        {isArabic ? product.nameAr : product.nameEn} × {quantity}
+                      </span>
+                      <span className="font-semibold text-stone-900">
+                        ${(Number(product.price) * quantity).toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div className="pt-4 border-t border-stone-200">
+                  <div className="flex justify-between items-center">
+                    <span className="font-['Cormorant_Garamond'] text-xl font-bold text-stone-900">
+                      {isArabic ? 'الإجمالي' : 'Total'}
+                    </span>
+                    <span className="font-['Cormorant_Garamond'] text-2xl font-bold text-teal-600">
+                      ${total.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Step 3: Confirmation */}
+        {step === 3 && orderResult && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="max-w-2xl mx-auto"
+          >
+            <div className="relative bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-12 text-center border border-teal-100 overflow-hidden">
+              {/* Decorative elements */}
+              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-500"></div>
+              <div className="absolute top-0 right-0 w-64 h-64 bg-teal-400/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-400/10 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: 'spring' }}
+                className="relative w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg shadow-teal-500/50 animate-float"
+              >
+                <Check className="w-12 h-12 text-white" />
+              </motion.div>
+
+              <motion.h2
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="font-['Cormorant_Garamond'] text-5xl font-bold text-stone-900 mb-4"
+              >
+                {isArabic ? 'تم تأكيد طلبك!' : 'Order Confirmed!'}
+              </motion.h2>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="font-['Manrope'] text-lg text-stone-600 mb-8"
+              >
+                {isArabic
+                  ? 'شكراً لثقتك! سنتواصل معك قريباً لتأكيد تفاصيل التوصيل'
+                  : 'Thank you for your trust! We\'ll contact you soon to confirm delivery details'
+                }
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="relative bg-gradient-to-br from-stone-50 to-teal-50/50 rounded-3xl p-8 mb-8"
+              >
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <Package className="w-5 h-5 text-stone-500" />
+                  <p className="font-['Manrope'] text-sm text-stone-600">
+                    {isArabic ? 'رقم الطلب' : 'Order Number'}
+                  </p>
+                </div>
                 <motion.div
-                  key={benefit.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="text-center"
+                  whileHover={{ scale: 1.05 }}
+                  className="inline-flex items-center gap-3 bg-white px-6 py-3 rounded-2xl shadow-sm cursor-pointer group"
+                  onClick={() => navigator.clipboard.writeText(orderResult.orderNumber)}
                 >
-                  <IconComponent className={`w-12 h-12 ${benefit.color} mx-auto mb-4`} />
-                  <h3 className="text-xl font-semibold text-white mb-2">{benefit.title}</h3>
-                  <p className="text-teal-100">{benefit.description}</p>
+                  <p className="font-['Cormorant_Garamond'] text-3xl font-bold text-teal-600">
+                    {orderResult.orderNumber}
+                  </p>
+                  <Sparkles className="w-5 h-5 text-teal-600 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </motion.div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
+
+                <div className="mt-6 pt-6 border-t border-stone-200 space-y-3">
+                  <div className="flex justify-between font-['Manrope']">
+                    <span className="text-stone-600">{isArabic ? 'الإجمالي' : 'Total'}</span>
+                    <span className="font-semibold text-stone-900">${orderResult.total}</span>
+                  </div>
+                  <div className="flex justify-between font-['Manrope']">
+                    <span className="text-stone-600">{isArabic ? 'طريقة الدفع' : 'Payment'}</span>
+                    <span className="font-semibold text-teal-600">
+                      {isArabic ? 'الدفع عند الاستلام' : 'Cash on Delivery'}
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+              >
+                <Link
+                  to={isArabic ? '/ar' : '/'}
+                  className="inline-block bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-['Manrope'] font-semibold px-12 py-4 rounded-2xl shadow-lg shadow-teal-500/30 transition-all"
+                >
+                  {isArabic ? 'العودة للرئيسية' : 'Back to Home'}
+                </Link>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </div>
     </div>
   )
 }
-
-export default Booking 
