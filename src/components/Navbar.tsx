@@ -152,12 +152,14 @@ const Navbar = () => {
             </Link>
             
             {/* Order CTA */}
-            <Link
-              to="/booking"
+            <a
+              href="https://shop.reachfood.co/shop"
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-gradient-to-r from-teal-500 to-teal-600 text-white px-6 py-2 rounded-full font-medium hover:from-teal-400 hover:to-teal-500 transition-all duration-200 flex items-center space-x-2"
             >
               <span>{isArabic ? 'اطلب الآن' : 'Order Now'}</span>
-            </Link>
+            </a>
           </div>
 
           {/* Mobile menu button */}
@@ -228,13 +230,15 @@ const Navbar = () => {
                   <ShoppingCart className="w-6 h-6" />
                 </Link>
               </div>
-              <Link
-                to={isArabic ? '/ar/booking' : '/booking'}
+              <a
+                href="https://shop.reachfood.co/shop"
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => setIsOpen(false)}
                 className="block px-3 py-2 mx-3 rounded-md text-base font-medium bg-gradient-to-r from-teal-500 to-teal-600 text-white hover:from-teal-400 hover:to-teal-500 text-center"
               >
                 {isArabic ? 'اطلب الآن' : 'Order Now'}
-              </Link>
+              </a>
             </div>
           </motion.div>
         )}

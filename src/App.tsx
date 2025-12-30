@@ -8,11 +8,16 @@ import PremiumCursor from './components/PremiumCursor'
 import Home from './pages/Home'
 import Services from './pages/Services'
 import Portfolio from './pages/Portfolio'
-import Booking from './pages/Booking'
 import About from './pages/About'
 import Shop from './pages/Shop'
 import Investment from './pages/Investment'
 import Contact from './pages/Contact'
+
+// Redirect component for booking page
+const BookingRedirect = () => {
+  window.location.href = 'https://shop.reachfood.co/shop'
+  return null
+}
 
 function AppContent() {
   const [isLoading, setIsLoading] = useState(true)
@@ -103,19 +108,9 @@ function AppContent() {
                   </motion.div>
                 } 
               />
-              <Route 
-                path="/booking" 
-                element={
-                  <motion.div
-                    key="booking"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1.05 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <Booking />
-                  </motion.div>
-                } 
+              <Route
+                path="/booking"
+                element={<BookingRedirect />}
               />
               <Route 
                 path="/about" 
@@ -217,19 +212,9 @@ function AppContent() {
                   </motion.div>
                 } 
               />
-              <Route 
-                path="/ar/booking" 
-                element={
-                  <motion.div
-                    key="booking-ar"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1.05 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <Booking />
-                  </motion.div>
-                } 
+              <Route
+                path="/ar/booking"
+                element={<BookingRedirect />}
               />
               <Route 
                 path="/ar/about" 
