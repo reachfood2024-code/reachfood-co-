@@ -2,7 +2,33 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Check, Minus, Plus, Package, CreditCard, Sparkles, ShieldCheck } from 'lucide-react'
-import type { Product, OrderResult } from '../lib/api'
+
+// Types (previously from api.ts)
+interface Product {
+  id: string;
+  nameEn: string;
+  nameAr: string;
+  descriptionEn?: string;
+  descriptionAr?: string;
+  price: number;
+  originalPrice?: number;
+  category: string;
+  badgeEn?: string;
+  badgeAr?: string;
+  imageUrl?: string;
+  featuresEn: string[];
+  featuresAr: string[];
+  isFeatured: boolean;
+  isActive: boolean;
+}
+
+interface OrderResult {
+  orderNumber: string;
+  total: number;
+  status: string;
+  paymentMethod: string;
+  paymentStatus: string;
+}
 
 // Generate unique session ID
 const generateSessionId = () => {
