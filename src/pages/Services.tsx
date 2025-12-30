@@ -30,7 +30,7 @@ const Services = () => {
         isArabic ? 'دعم فرق الاستجابة الأولى' : 'First responder support'
       ],
       image: '/images/1.jpg',
-      stats: { deployments: isArabic ? 'أكثر من 15 دولة' : '15+ countries', response: isArabic ? 'استجابة خلال 24 ساعة' : '24-hour', capacity: isArabic ? 'أكثر من 10,000 وجبة' : '10,000+ meals' }
+      stats: { deployments: isArabic ? 'هدف: 15+ دولة' : 'Goal: 15+ countries', response: isArabic ? 'استجابة خلال 24 ساعة' : '24-hour', capacity: isArabic ? 'هدف: 10,000+ وجبة' : 'Goal: 10,000+ meals' }
     },
     {
       category: isArabic ? 'خدمات المغامرة والهواء الطلق' : 'Adventure & Outdoor Services',
@@ -60,7 +60,7 @@ const Services = () => {
         isArabic ? 'دعم تغذية العاملين بالورديات' : 'Shift worker nutrition support'
       ],
       image: '/images/3.jpg',
-      stats: { companies: isArabic ? 'خدمة 200+ شركة' : '200+ served', productivity: isArabic ? '+25% إنتاجية' : '+25% reported', satisfaction: isArabic ? 'تقييم 96%' : '96% rating' }
+      stats: { companies: isArabic ? 'هدف: 200+ شركة' : 'Goal: 200+ companies', productivity: isArabic ? 'هدف: +25% إنتاجية' : 'Target: +25%', satisfaction: isArabic ? 'هدف: تقييم 96%' : 'Target: 96%' }
     },
     {
       category: isArabic ? 'خدمات الرعاية الصحية وكبار السن' : 'Healthcare & Senior Services',
@@ -75,7 +75,7 @@ const Services = () => {
         isArabic ? 'برامج الحميات العلاجية' : 'Therapeutic diet programs'
       ],
       image: '/images/4.jpg',
-      stats: { facilities: isArabic ? '150+ شريك' : '150+ partners', compliance: isArabic ? 'التزام غذائي 100%' : '100% dietary', satisfaction: isArabic ? 'تقييم 96%' : '96% rating' }
+      stats: { facilities: isArabic ? 'هدف: 150+ شريك' : 'Goal: 150+ partners', compliance: isArabic ? 'التزام غذائي 100%' : '100% dietary', satisfaction: isArabic ? 'هدف: تقييم 96%' : 'Target: 96%' }
     },
     {
       category: isArabic ? 'خدمات المؤسسات التعليمية' : 'Educational Institution Services',
@@ -90,7 +90,7 @@ const Services = () => {
         isArabic ? 'برامج تبادل دولي' : 'International exchange programs'
       ],
       image: '/images/5.jpg',
-      stats: { students: isArabic ? 'خدمة 50,000+ طالب' : '50,000+ served', schools: isArabic ? '75+ مؤسسة' : '75+ institutions', nutrition: isArabic ? 'توازن غذائي 100%' : '100% balanced' }
+      stats: { students: isArabic ? 'هدف: 50,000+ طالب' : 'Goal: 50,000+ students', schools: isArabic ? 'هدف: 75+ مؤسسة' : 'Goal: 75+ institutions', nutrition: isArabic ? 'توازن غذائي 100%' : '100% balanced' }
     },
     {
       category: isArabic ? 'خدمات التوزيع العالمية' : 'Global Distribution Services',
@@ -105,7 +105,7 @@ const Services = () => {
         isArabic ? 'حلول تغليف مخصصة' : 'Custom packaging solutions'
       ],
       image: '/images/6.jpg',
-      stats: { countries: isArabic ? 'أكثر من 25 دولة نشطة' : '25+ active', logistics: isArabic ? 'تسليم خلال 48 ساعة' : '48-hour delivery', scale: isArabic ? 'أكثر من مليون وجبة/شهر' : '1M+ meals/month' }
+      stats: { countries: isArabic ? 'هدف: 25+ دولة' : 'Goal: 25+ countries', logistics: isArabic ? 'تسليم خلال 48 ساعة' : '48-hour delivery', scale: isArabic ? 'هدف: مليون+ وجبة/شهر' : 'Goal: 1M+ meals/month' }
     }
   ]
 
@@ -190,9 +190,9 @@ const Services = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-slate-900 mb-4">{isArabic ? 'حلول خدماتنا' : 'Our Service Solutions'}</h2>
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-slate-900 mb-4">{isArabic ? 'رؤيتنا وأهدافنا' : 'Our Vision & Goals'}</h2>
             <p className="text-xl text-slate-600 max-w-4xl mx-auto leading-relaxed">
-              {isArabic ? 'خدمات تغذية متخصصة مصممة لبيئات ومجتمعات وحالات استخدام محددة' : 'Specialized nutrition services designed for specific environments, communities, and use cases'}
+              {isArabic ? 'خدمات تغذية متخصصة نسعى لتقديمها في بيئات ومجتمعات وحالات استخدام محددة' : 'Specialized nutrition services we aim to deliver across specific environments, communities, and use cases'}
             </p>
           </motion.div>
 
@@ -271,8 +271,8 @@ const Services = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                title: isArabic ? 'موثوقية مثبتة' : 'Proven Reliability',
-                description: isArabic ? 'تم النشر في أكثر من 25 دولة بمعدل نجاح 99.9% في الحالات الحرجة' : 'Deployed in 25+ countries with 99.9% success rate in critical situations',
+                title: isArabic ? 'بناء الموثوقية' : 'Building Reliability',
+                description: isArabic ? 'هدفنا الوصول إلى 25+ دولة بمعدل نجاح 99.9% في الحالات الحرجة' : 'Our goal: Reach 25+ countries with 99.9% success rate in critical situations',
                 icon: Shield
               },
               {
