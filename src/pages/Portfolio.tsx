@@ -183,6 +183,62 @@ const Portfolio = () => {
         </div>
       </section>
 
+      {/* Partners Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-slate-900 mb-4">
+              {isArabic ? 'شركاؤنا' : 'Our Partners'}
+            </h2>
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+              {isArabic
+                ? 'نفخر بالتعاون مع شركاء استراتيجيين يشاركوننا رؤيتنا'
+                : 'We are proud to collaborate with strategic partners who share our vision'
+              }
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center justify-items-center max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="bg-slate-50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 w-full max-w-sm"
+            >
+              <img
+                src="/images/reachsci-logo.webp"
+                alt="ReachSci"
+                className="h-32 w-auto mx-auto object-contain"
+              />
+              <h3 className="text-xl font-semibold text-slate-900 text-center mt-4">ReachSci</h3>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="bg-slate-50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 w-full max-w-sm"
+            >
+              <img
+                src="/images/doyen-logo.jpg"
+                alt="Doyen Food Technology"
+                className="h-32 w-auto mx-auto object-contain"
+              />
+              <h3 className="text-xl font-semibold text-slate-900 text-center mt-4">
+                {isArabic ? 'دوين لتقنيات الغذاء' : 'Doyen Food Technology'}
+              </h3>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-slate-900 via-teal-900 to-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
