@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLocation, Link } from 'react-router-dom'
-import { Check, X, Sparkles, Clock, Truck, Award } from 'lucide-react'
+import { Check, X, Sparkles } from 'lucide-react'
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://shop.reachfood.co/api/v1'
 const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL
@@ -252,16 +252,16 @@ const Offers = () => {
   const getPricePerMeal = (plan: (typeof subscriptionPlans)[0]) => {
     if (plan.badge === 'bundleValue') {
       return currency === 'SAR'
-        ? `${plan.pricePerMealSAR.toFixed(2)} SAR ${t('bundleValue', isArabic)}`
-        : `$${plan.pricePerMealUSD.toFixed(2)} ${t('bundleValue', isArabic)}`
+        ? `${(plan.pricePerMealSAR ?? 0).toFixed(2)} SAR ${t('bundleValue', isArabic)}`
+        : `$${(plan.pricePerMealUSD ?? 0).toFixed(2)} ${t('bundleValue', isArabic)}`
     }
     if (plan.badge === 'premium') {
       return t('premium', isArabic)
     }
     if (currency === 'SAR') {
-      return `${plan.pricePerMealSAR.toFixed(2)} SAR / ${t('meal', isArabic)}`
+      return `${(plan.pricePerMealSAR ?? 0).toFixed(2)} SAR / ${t('meal', isArabic)}`
     }
-    return `$${plan.pricePerMealUSD.toFixed(2)} / ${t('meal', isArabic)}`
+    return `$${(plan.pricePerMealUSD ?? 0).toFixed(2)} / ${t('meal', isArabic)}`
   }
 
   const handleSelectPlan = (planId: string) => {
