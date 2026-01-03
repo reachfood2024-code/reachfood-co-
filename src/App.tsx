@@ -12,6 +12,7 @@ import About from './pages/About'
 import Shop from './pages/Shop'
 import Investment from './pages/Investment'
 import Contact from './pages/Contact'
+import Offers from './pages/Offers'
 
 // Redirect component for booking page
 const BookingRedirect = () => {
@@ -126,8 +127,8 @@ function AppContent() {
                   </motion.div>
                 } 
               />
-              <Route 
-                path="/shop" 
+              <Route
+                path="/shop"
                 element={
                   <motion.div
                     key="shop"
@@ -138,9 +139,23 @@ function AppContent() {
                   >
                     <Shop />
                   </motion.div>
-                } 
+                }
               />
-              <Route 
+              <Route
+                path="/offers"
+                element={
+                  <motion.div
+                    key="offers"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -30 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <Offers />
+                  </motion.div>
+                }
+              />
+              <Route
                 path="/investment" 
                 element={
                   <motion.div
@@ -230,8 +245,8 @@ function AppContent() {
                   </motion.div>
                 } 
               />
-              <Route 
-                path="/ar/shop" 
+              <Route
+                path="/ar/shop"
                 element={
                   <motion.div
                     key="shop-ar"
@@ -242,9 +257,23 @@ function AppContent() {
                   >
                     <Shop />
                   </motion.div>
-                } 
+                }
               />
-              <Route 
+              <Route
+                path="/ar/offers"
+                element={
+                  <motion.div
+                    key="offers-ar"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -30 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <Offers />
+                  </motion.div>
+                }
+              />
+              <Route
                 path="/ar/investment" 
                 element={
                   <motion.div

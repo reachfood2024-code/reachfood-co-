@@ -15,9 +15,9 @@ const Navbar = () => {
       return [
         { name: 'الرئيسية', path: '/ar' },
         { name: 'المنتجات', path: '/ar/services' },
-        { 
-          name: 'تعاون معنا', 
-          path: '/ar/portfolio', 
+        {
+          name: 'تعاون معنا',
+          path: '/ar/portfolio',
           hasDropdown: true,
           dropdownItems: [
             { name: 'الاستثمار', path: '/ar/investment' },
@@ -26,15 +26,16 @@ const Navbar = () => {
           ]
         },
         { name: 'المتجر', path: '/ar/shop' },
+        { name: 'العروض', path: '/ar/offers' },
         { name: 'اتصل بنا', path: '/ar/contact' },
       ]
     }
     return [
       { name: 'Home', path: '/' },
       { name: 'Products', path: '/services' },
-      { 
-        name: 'Collaborate with Us', 
-        path: '/portfolio', 
+      {
+        name: 'Collaborate with Us',
+        path: '/portfolio',
         hasDropdown: true,
         dropdownItems: [
           { name: 'Investment', path: '/investment' },
@@ -43,6 +44,7 @@ const Navbar = () => {
         ]
       },
       { name: 'Shop', path: '/shop' },
+      { name: 'Offers', path: '/offers' },
       { name: 'Contact', path: '/contact' },
     ]
   }, [isArabic])
