@@ -43,6 +43,14 @@ const About = () => {
       image: '/images/amera.jpg'
     },
     {
+      name: isArabic ? 'د. حسن' : 'Dr. Hassan',
+      role: isArabic ? 'المؤسس المشارك' : 'Co-founder',
+      background: isArabic ? 'عالم أغذية ومستشار في الهيئة العامة للغذاء والدواء مع أكثر من 20 عامًا من الخبرة. رائد في تطوير أول منصة SaaS رقمية لسلامة الغذاء في المنطقة لأتمتة الضوابط التنظيمية والتشغيلية المعقدة. أقود النمو المؤسسي الاستراتيجي من خلال دمج عقود من البحث التقني وإدارة الجودة واسعة النطاق مع حلول تقنية المعلومات الحديثة المعتمدة على البيانات.' : 'Food Scientist and SFDA advisor with over 20 years of experience, I pioneered the region\'s first digitalized food safety SaaS platform to automate complex regulatory and operational controls. I drive strategic institutional growth by merging decades of technical research and large-scale quality management with modern, data-driven IT solutions.',
+      expertise: isArabic ? 'علوم الأغذية، سلامة الغذاء، الحلول التقنية' : 'Food Science, Food Safety, Technical Solutions',
+      email: 'almasri.h@doyen.sa',
+      image: '/images/hassan.jpg'
+    },
+    {
       name: isArabic ? 'د. الجوهرة السبيعي' : 'Dr.Aljawharah Alsubaie',
       role: isArabic ? 'مستشار غذائي' : 'Food Advisor',
       background: isArabic ? 'باحثة في الفعالية العلاجية. قدمت براءة اختراع عام 2014 لحلوى مبتكرة للعناية بالأسنان. تدريب في مستشفيات NHS.' : 'Researcher in Therapeutic Effectiveness. Filed Patent in 2014, Patent in innovative candy for dental care. Hospital training in NHS hospitals.',
