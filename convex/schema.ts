@@ -75,6 +75,29 @@ export default defineSchema({
     .index("by_subscribedAt", ["subscribedAt"])
     .index("by_isActive", ["isActive"]),
 
+  // B2B Leads: Restaurant owner inquiries
+  b2bLeads: defineTable({
+    email: v.string(),
+    businessName: v.optional(v.string()),
+    contactName: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    message: v.optional(v.string()),
+    status: v.union(
+      v.literal("new"),
+      v.literal("contacted"),
+      v.literal("qualified"),
+      v.literal("converted"),
+      v.literal("not_interested")
+    ),
+    source: v.string(), // "homepage", "landing_page", etc.
+    submittedAt: v.number(),
+    contactedAt: v.optional(v.number()),
+    notes: v.optional(v.string()),
+  })
+    .index("by_email", ["email"])
+    .index("by_status", ["status"])
+    .index("by_submittedAt", ["submittedAt"]),
+
   // Orders: Completed purchases
   orders: defineTable({
     orderNumber: v.string(), // Human-readable: ORD-001234
