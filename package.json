@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "npm run convex:dev & vite",
-    "build": "npm run convex:generate && tsc -b && vite build",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "convex:dev": "convex dev",
