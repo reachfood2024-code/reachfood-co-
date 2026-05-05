@@ -77,10 +77,10 @@ const Navbar = () => {
               animate={{ opacity: 1, x: 0 }}
               className="w-10 h-10 rounded-full overflow-hidden"
             >
-              <img 
-                src="/images/logo.jpg" 
+              <img
+                src="/images/logo.png"
                 alt="ReachFood Logo"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             </motion.div>
             <motion.div

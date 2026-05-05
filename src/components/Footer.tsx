@@ -21,9 +21,9 @@ const Footer = () => {
               <div className="flex items-center space-x-2 mb-2">
                 <div className="w-8 h-8 rounded-full overflow-hidden">
                   <img
-                    src="/images/logo.jpg"
+                    src="/images/logo.png"
                     alt="ReachFood Logo"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                 </div>
                 <div className="text-xl font-serif font-bold">

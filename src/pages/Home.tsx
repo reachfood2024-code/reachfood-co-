@@ -1,15 +1,19 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { 
-  Shield, 
-  Leaf, 
-  Globe, 
-  Heart, 
+import {
+  Shield,
+  Leaf,
+  Globe,
+  Heart,
   Zap,
   Mountain,
   Building,
   UserCheck,
-  CheckCircle
+  CheckCircle,
+  Sprout,
+  Flame,
+  Microwave,
+  Recycle
 } from 'lucide-react'
 import ParallaxHero from '../components/ParallaxHero'
 import { useIsArabic, tr } from '../i18n'
@@ -519,6 +523,189 @@ const Home = () => {
               </div>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Sustainable Packaging Solutions Section */}
+      <section className="py-20 bg-gradient-to-b from-emerald-50 via-white to-teal-50 relative overflow-hidden">
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-200/30 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-teal-200/30 rounded-full blur-3xl"></div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Feature Pills */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex flex-wrap justify-center gap-3 md:gap-4 mb-12"
+          >
+            {[
+              { icon: Sprout, label: isArabic ? 'قابل للتحلل والزراعة' : 'Biodegradable & Plantable', color: 'text-green-600', bg: 'bg-green-50', border: 'border-green-200' },
+              { icon: Flame, label: isArabic ? 'مقاوم للحرارة' : 'Heat Resistant', color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-200' },
+              { icon: Microwave, label: isArabic ? 'تسخين ذاتي وآمن للميكروويف' : 'Self-Heating & Safe Microwave Use', color: 'text-teal-600', bg: 'bg-teal-50', border: 'border-teal-200' },
+              { icon: Recycle, label: isArabic ? 'بدون بلاستيك' : 'Zero Plastic', color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200' }
+            ].map((pill, index) => (
+              <motion.div
+                key={pill.label}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.08 }}
+                whileHover={{ scale: 1.05, y: -2 }}
+                className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full border ${pill.border} ${pill.bg} shadow-sm hover:shadow-md transition-all`}
+              >
+                <pill.icon className={`w-5 h-5 ${pill.color}`} />
+                <span className="text-sm md:text-base font-semibold text-slate-800">{pill.label}</span>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Heading */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-14"
+          >
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-slate-900 mb-6">
+              {isArabic ? 'حلول التغليف المستدام' : 'Sustainable Packaging Solutions'}
+            </h2>
+            <div className="max-w-4xl mx-auto space-y-5 text-lg text-slate-700 leading-relaxed">
+              <p>
+                {isArabic
+                  ? 'في ReachFood، نطوّر تغليف غذاء صديقاً للبيئة، قابلاً للتحلل والزراعة ومقاوماً للحرارة، صُمم ليحلّ محل المواد البلاستيكية الضارة ويقلّل الأثر البيئي بشكل كبير. تتضمن محفظتنا أنظمة تغليف ذاتية التسخين متقدمة وحلول تغليف غذائية مستدامة أخرى مصممة لاستخدامات متنوعة.'
+                  : 'At ReachFood, we develop eco-friendly, biodegradable, plantable, and heat-resistant food packaging designed to replace harmful plastic materials and significantly reduce environmental impact. Our portfolio includes both advanced self-heating packaging systems and other sustainable food packaging solutions tailored for diverse use cases.'}
+              </p>
+              <p>
+                {isArabic
+                  ? 'يدمج تغليفنا ذاتي التسخين تقنيات تنشيط حراري آمنة وفعّالة ضمن مواد مسؤولة بيئياً، مما يتيح التسخين عند الطلب دون مصادر طاقة خارجية، وهو مثالي للاستجابة الطارئة، والبيئات النائية، والراحة اليومية.'
+                  : 'Our self-heating packaging integrates safe, efficient thermal activation technologies within environmentally responsible materials, enabling on-demand heating without external energy sources—ideal for emergency response, remote environments, and everyday convenience.'}
+              </p>
+              <p>
+                {isArabic
+                  ? 'يتجاوز ابتكارنا التغليف من خلال دمج الاستدامة والبحث العلمي والوعي المجتمعي، فنبتكر حلولاً تدعم الاقتصاد الدائري وتعزّز مجتمعات صامدة ومستدامة.'
+                  : 'Our innovation goes beyond packaging by integrating sustainability, scientific research, and community awareness, we create solutions that actively support the circular economy and promote resilient, sustainable communities.'}
+              </p>
+              <p>
+                {isArabic
+                  ? 'نلتزم بجعل تغليفنا متاحاً وقابلاً للتوسع، ليخدم شرائح متنوعة ويسهم في الأمن الغذائي ويقلّل الضغط البيئي على سلاسل الإمداد.'
+                  : 'We are committed to making our packaging accessible and scalable, ensuring it can serve diverse populations while contributing to food security and reducing environmental stress across supply chains.'}
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Image Gallery */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20"
+          >
+            {[
+              '/images/sustainable/packaging-1.jpg',
+              '/images/sustainable/packaging-2.jpg',
+              '/images/sustainable/packaging-3.jpg'
+            ].map((src, index) => (
+              <motion.div
+                key={src}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ y: -8 }}
+                className="group relative overflow-hidden rounded-2xl shadow-xl bg-white"
+              >
+                <img
+                  src={src}
+                  alt={isArabic ? `تغليف مستدام ${index + 1}` : `Sustainable packaging ${index + 1}`}
+                  className="w-full h-72 md:h-80 object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Advanced Sustainable Packaging Systems */}
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
+              <div className="lg:col-span-2 relative bg-gradient-to-br from-emerald-700 via-teal-700 to-slate-900 p-10 lg:p-12 text-white">
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                >
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm mb-6">
+                    <Sprout className="w-4 h-4 text-emerald-300" />
+                    <span className="text-xs font-semibold uppercase tracking-wider text-emerald-100">
+                      {isArabic ? 'هندسة الجيل القادم' : 'Next-Gen Engineering'}
+                    </span>
+                  </div>
+                  <h3 className="text-3xl md:text-4xl font-serif font-bold mb-6 leading-tight">
+                    {isArabic ? 'أنظمة التغليف المستدامة المتقدمة' : 'Advanced Sustainable Packaging Systems'}
+                  </h3>
+
+                  <div className="grid grid-cols-2 gap-4 mt-8">
+                    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                      <div className="text-3xl font-bold text-emerald-300 mb-1">60–90°C</div>
+                      <div className="text-xs text-emerald-100">{isArabic ? 'حرارة التسخين خلال 5–10 دقائق' : 'Heating in 5–10 min'}</div>
+                    </div>
+                    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                      <div className="text-3xl font-bold text-emerald-300 mb-1">180</div>
+                      <div className="text-xs text-emerald-100">{isArabic ? 'يوماً للتحلل الطبيعي' : 'Days to biodegrade'}</div>
+                    </div>
+                    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                      <div className="text-3xl font-bold text-emerald-300 mb-1">70–90%</div>
+                      <div className="text-xs text-emerald-100">{isArabic ? 'تقليل النفايات البلاستيكية' : 'Plastic waste reduction'}</div>
+                    </div>
+                    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                      <div className="text-3xl font-bold text-emerald-300 mb-1">30–50%</div>
+                      <div className="text-xs text-emerald-100">{isArabic ? 'انخفاض انبعاثات الكربون' : 'Lower carbon emissions'}</div>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+
+              <div className="lg:col-span-3 p-10 lg:p-12">
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  className="space-y-5 text-slate-700 leading-relaxed"
+                >
+                  <p>
+                    {isArabic
+                      ? 'في ReachFood، نهندس أنظمة تغليف غذائية من الجيل التالي قابلة للتحلل والزراعة ومقاومة حرارياً، صُممت لتحلّ محل البلاستيك التقليدي القائم على البترول عبر سلاسل الإمداد الغذائية. تدمج تقنيتنا علم المواد، والهندسة البيئية، ومبادئ الاقتصاد الدائري لتقديم تغليف عالي الأداء ببصمة بيئية أقل بكثير.'
+                      : 'At ReachFood, we engineer next-generation food packaging systems that are biodegradable, plantable, and thermally resistant, designed to replace conventional petroleum-based plastics across food supply chains. Our technology integrates materials science, environmental engineering, and circular economy principles to deliver high-performance packaging with a significantly reduced ecological footprint.'}
+                  </p>
+                  <p>
+                    {isArabic
+                      ? 'يستخدم النظام البوليمرات الحيوية، والمنتجات الزراعية الثانوية، والمخلفات النباتية كمواد وظيفية لتحقيق سلامة هيكلية، ومقاومة حرارية مضبوطة، وتوافق مع تطبيقات التسخين الذاتي. يدمج تغليفنا ذاتي التسخين آليات تنشيط حراري آمنة وفعّالة ضمن مواد مستدامة، مما يتيح تسخيناً عند الطلب دون مصادر طاقة خارجية.'
+                      : 'The system utilizes bio-based polymers, agricultural by-products, and plant-based residues as functional materials to achieve structural integrity, controlled thermal resistance, and compatibility with self-heating applications. Our self-heating packaging integrates safe, efficient thermal activation mechanisms within sustainable materials, enabling on-demand heating without external energy sources.'}
+                  </p>
+                  <p>
+                    {isArabic
+                      ? 'صُممت أنظمة التغليف لدينا لتحقيق درجات حرارة تسخين تتراوح بين 60 و90 درجة مئوية خلال 5 إلى 10 دقائق، مما يجعلها مناسبة للوجبات الجاهزة للأكل في البيئات الطارئة والعسكرية والنائية.'
+                      : 'Our packaging systems are designed to achieve heating temperatures of 60–90°C within 5–10 minutes, making them suitable for ready-to-eat meals in emergency, military, and remote settings.'}
+                  </p>
+                  <p>
+                    {isArabic
+                      ? 'بعد الاستخدام، صُمم التغليف ليتحلل في ظروف التربة الطبيعية خلال ما يصل إلى 180 يوماً، أو يتحول إلى وسط نمو وظيفي يدعم إنبات البذور وتحسين التربة، خاصة في البيئات القاحلة والمالحة والمتدهورة.'
+                      : 'Post-use, the packaging is designed to biodegrade under natural soil conditions within up to 180 days, or transition into a functional growth medium that supports seed germination and soil enhancement—particularly in arid, saline, and degraded environments.'}
+                  </p>
+                  <p>
+                    {isArabic
+                      ? 'يتماشى نهجنا مع أطر تقييم دورة الحياة (LCA)، ويستهدف تقليل النفايات البلاستيكية بنسبة تصل إلى 70–90% وانبعاثات كربونية أقل بنسبة 30–50% مقارنة بالتغليف البلاستيكي التقليدي ذي الاستخدام الواحد (بناءً على استبدال المواد وسيناريوهات نهاية الحياة). بالتوازي مع ذلك، تدعم وظيفة الزراعة ممارسات الزراعة المتجددة والإنتاج الغذائي المحلي، مما يسهم في الصمود المناخي وإدارة الأراضي المستدامة.'
+                      : 'Our approach aligns with Life Cycle Assessment (LCA) frameworks, targeting up to 70–90% reduction in plastic waste and 30–50% lower carbon emissions compared to conventional single-use plastic packaging (based on material substitution and end-of-life scenarios). In parallel, the plantable functionality supports regenerative agriculture practices and localized food production, contributing to climate resilience and sustainable land management.'}
+                  </p>
+                  <p>
+                    {isArabic
+                      ? 'طُوّرت حلول التغليف من ReachFood مع مراعاة قابلية التوسع وكفاءة التكلفة وسهولة الوصول، مما يتيح النشر عبر البيئات الإنسانية والتجارية ومحدودة الموارد. من خلال ربط ابتكار المواد المستدامة بصمود المنظومة الغذائية، نعالج تحديات حاسمة عند تقاطع التدهور البيئي وانعدام الأمن الغذائي.'
+                      : 'ReachFood\'s packaging solutions are developed with scalability, cost-efficiency, and accessibility in mind, enabling deployment across humanitarian, commercial, and low-resource settings. By linking sustainable materials innovation with food system resilience, we address critical challenges at the intersection of environmental degradation and food insecurity.'}
+                  </p>
+                </motion.div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
