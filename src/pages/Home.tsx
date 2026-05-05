@@ -542,7 +542,7 @@ const Home = () => {
             {[
               { icon: Sprout, label: isArabic ? 'قابل للتحلل والزراعة' : 'Biodegradable & Plantable', color: 'text-green-600', bg: 'bg-green-50', border: 'border-green-200' },
               { icon: Flame, label: isArabic ? 'مقاوم للحرارة' : 'Heat Resistant', color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-200' },
-              { icon: Microwave, label: isArabic ? 'تسخين ذاتي وآمن للميكروويف' : 'Self-Heating & Safe Microwave Use', color: 'text-teal-600', bg: 'bg-teal-50', border: 'border-teal-200' },
+              { icon: Microwave, label: isArabic ? 'تسخين ذاتي وآمن للميكروويف' : 'Self Heating & Safe Microwave Use', color: 'text-teal-600', bg: 'bg-teal-50', border: 'border-teal-200' },
               { icon: Recycle, label: isArabic ? 'بدون بلاستيك' : 'Zero Plastic', color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200' }
             ].map((pill, index) => (
               <motion.div
@@ -579,7 +579,7 @@ const Home = () => {
               <p>
                 {isArabic
                   ? 'يدمج تغليفنا ذاتي التسخين تقنيات تنشيط حراري آمنة وفعّالة ضمن مواد مسؤولة بيئياً، مما يتيح التسخين عند الطلب دون مصادر طاقة خارجية، وهو مثالي للاستجابة الطارئة، والبيئات النائية، والراحة اليومية.'
-                  : 'Our self-heating packaging integrates safe, efficient thermal activation technologies within environmentally responsible materials, enabling on-demand heating without external energy sources—ideal for emergency response, remote environments, and everyday convenience.'}
+                  : 'Our self-heating packaging integrates safe, efficient thermal activation technologies within environmentally responsible materials, enabling on demand heating without external energy sources, ideal for emergency response, remote environments, and everyday convenience.'}
               </p>
               <p>
                 {isArabic
