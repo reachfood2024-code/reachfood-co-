@@ -680,17 +680,17 @@ const Home = () => {
                   <p>
                     {isArabic
                       ? 'يستخدم النظام البوليمرات الحيوية، والمنتجات الزراعية الثانوية، والمخلفات النباتية كمواد وظيفية لتحقيق سلامة هيكلية، ومقاومة حرارية مضبوطة، وتوافق مع تطبيقات التسخين الذاتي. يدمج تغليفنا ذاتي التسخين آليات تنشيط حراري آمنة وفعّالة ضمن مواد مستدامة، مما يتيح تسخيناً عند الطلب دون مصادر طاقة خارجية.'
-                      : 'The system utilizes bio-based polymers, agricultural by-products, and plant-based residues as functional materials to achieve structural integrity, controlled thermal resistance, and compatibility with self-heating applications. Our self-heating packaging integrates safe, efficient thermal activation mechanisms within sustainable materials, enabling on-demand heating without external energy sources.'}
+                      : 'The system utilizes bio-based polymers, agricultural by-products, and plant-based residues as functional materials to achieve structural integrity, controlled thermal resistance, and compatibility with self-heating applications. Our self-heating packaging integrates safe, efficient thermal activation mechanisms within sustainable materials, enabling on demand heating without external energy sources.'}
                   </p>
                   <p>
                     {isArabic
                       ? 'صُممت أنظمة التغليف لدينا لتحقيق درجات حرارة تسخين تتراوح بين 60 و90 درجة مئوية خلال 5 إلى 10 دقائق، مما يجعلها مناسبة للوجبات الجاهزة للأكل في البيئات الطارئة والعسكرية والنائية.'
-                      : 'Our packaging systems are designed to achieve heating temperatures of 60–90°C within 5–10 minutes, making them suitable for ready-to-eat meals in emergency, military, and remote settings.'}
+                      : 'Our packaging systems are designed to achieve heating temperatures of 60–90°C within 5–10 minutes, making them suitable for ready to eat meals in emergency, military, and remote settings.'}
                   </p>
                   <p>
                     {isArabic
                       ? 'بعد الاستخدام، صُمم التغليف ليتحلل في ظروف التربة الطبيعية خلال ما يصل إلى 180 يوماً، أو يتحول إلى وسط نمو وظيفي يدعم إنبات البذور وتحسين التربة، خاصة في البيئات القاحلة والمالحة والمتدهورة.'
-                      : 'Post-use, the packaging is designed to biodegrade under natural soil conditions within up to 180 days, or transition into a functional growth medium that supports seed germination and soil enhancement—particularly in arid, saline, and degraded environments.'}
+                      : 'Post use, the packaging is designed to biodegrade under natural soil conditions within up to 180 days, or transition into a functional growth medium that supports seed germination and soil enhancement particularly in arid, saline, and degraded environments.'}
                   </p>
                   <p>
                     {isArabic
