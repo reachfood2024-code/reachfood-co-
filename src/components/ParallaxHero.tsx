@@ -39,7 +39,7 @@ const ParallaxHero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1 }}
         >
-          R<span className="text-orange-400">E</span>ACHF<span className="text-orange-400">OO</span>D
+          R<span className="text-orange-400">E</span>A<span className="text-orange-400">C</span>HF<span className="text-orange-400">O</span>OD
         </motion.h1>
         
         <motion.p 
