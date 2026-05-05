@@ -17,8 +17,8 @@ export const dict: Dictionary = {
   // ParallaxHero
   heroBadge: { en: 'Revolutionary Food Technology', ar: 'تقنية غذائية ثورية' },
   heroParagraph: {
-    en: 'Revolutionizing nutrition with 12+ health-focused recovery meals self-heating and ready in just 3–5 minutes. A sustainable, accessible, and culturally authentic food solution for everyone, everywhere.',
-    ar: 'نحدث ثورة في التغذية مع أكثر من 12 وجبة تعافٍ صحية ذاتية التسخين جاهزة خلال 3–5 دقائق. حل غذائي مستدام، سهل الوصول، وأصيل ثقافياً للجميع في كل مكان.'
+    en: 'ReachFood offers self-heating, ready to eat meals delivered in eco-friendly, biodegradable, and plantable packaging also available as a standalone packaging products. Our solution replaces single use plastics with sustainable materials, improving food access anytime, anywhere, while reducing environmental, health impact. It is designed for food providers serving busy professionals, athletes, large events, emergency situations, and NGOs, and is supported by a digital application that tracks environmental footprint and plastic waste reduction across the food system.',
+    ar: 'تقدم ReachFood وجبات ذاتية التسخين جاهزة للأكل ضمن تغليف صديق للبيئة، قابل للتحلل والزراعة، ومتوفر أيضاً كمنتجات تغليف مستقلة. يستبدل حلنا البلاستيك ذا الاستخدام الواحد بمواد مستدامة، مما يحسّن الوصول إلى الغذاء في أي وقت وأي مكان، ويقلل من الأثر البيئي والصحي. صُمم لمزودي الأغذية الذين يخدمون المهنيين المشغولين والرياضيين والفعاليات الكبرى وحالات الطوارئ والمنظمات غير الحكومية، ومدعوم بتطبيق رقمي يتتبع البصمة البيئية وتقليل النفايات البلاستيكية عبر منظومة الغذاء.'
   },
 
   // Footer
