@@ -244,7 +244,7 @@ const Portfolio = () => {
               className="bg-slate-50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 w-full max-w-sm"
             >
               <img
-                src="/images/Nahno-logo.png"
+               src="/images/nahno-logo-ar-text-below.png"
                 alt="Nahno"
                 className="h-32 w-auto mx-auto object-contain"
               />
