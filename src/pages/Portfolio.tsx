@@ -235,6 +235,23 @@ const Portfolio = () => {
                 {isArabic ? 'دوين لتقنيات الغذاء' : 'Doyen Food Technology'}
               </h3>
             </motion.div>
+
+                        <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="bg-slate-50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 w-full max-w-sm"
+            >
+              <img
+                src="/images/Nahno-logo.png"
+                alt="Nahno"
+                className="h-32 w-auto mx-auto object-contain"
+              />
+              <h3 className="text-xl font-semibold text-slate-900 text-center mt-4">
+                {isArabic ? 'نحن' : 'Nahno'}
+              </h3>
+            </motion.div>
           </div>
         </div>
       </section>
