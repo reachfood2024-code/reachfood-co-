@@ -210,11 +210,9 @@ ReachFood is committed to environmental responsibility through:
 
 ## 📞 Contact & Information
 
-- **Website**: [reachfood.com](https://reachfood.com)
-- **Email**: info@reachfood.com
-- **Partnerships**: partnerships@reachfood.com
-- **Technology**: tech@reachfood.com
-- **Press**: media@reachfood.com
+- **Website**: [reachfood.co](https://reachfood.co)
+- **Email**: info@reachfood.co
+- **FOUNDER/CEO**: AMEERA.AO@reachfood.co
 
 ## 🤝 Contributing
 
