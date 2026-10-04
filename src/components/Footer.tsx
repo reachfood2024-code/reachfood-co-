@@ -2,7 +2,6 @@ import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { MapPin, Phone, Mail, Clock, Instagram, Facebook, Twitter, Leaf, Zap, Globe, Shield } from 'lucide-react'
 import { tr } from '../i18n'
-
 const Footer = () => {
   const location = useLocation()
   const isArabic = location.pathname.startsWith('/ar')
@@ -143,15 +142,19 @@ const Footer = () => {
             <div className="space-y-1">
               <div className="flex items-center space-x-2">
                 <MapPin className="w-3 h-3 text-teal-500" />
+                <span className="text-sm text-gray-600">{isArabic ? 'الأردن - جرش' : 'Jordan - Jerash'}</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Globe className="w-3 h-3 text-teal-500" />
                 <span className="text-sm text-gray-600">{tr('globalDistribution', isArabic)}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="w-3 h-3 text-teal-500" />
-                <span className="text-sm text-gray-600">+1-800-REACH-FOOD</span>
+                <a href="tel:+962792977610" dir="ltr" className="text-sm text-gray-600 hover:text-teal-500 transition-colors">+962792977610</a>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="w-3 h-3 text-teal-500" />
-                <span className="text-sm text-gray-600">ameraaloto@gmail.com</span>
+                <a href="mailto:info@reachfood.co" className="text-sm text-gray-600 hover:text-teal-500 transition-colors">info@reachfood.co</a>
               </div>
               <div className="flex items-center space-x-2">
                 <Clock className="w-3 h-3 text-teal-500" />
@@ -174,6 +177,31 @@ const Footer = () => {
               <li>
                 <Link to={isArabic ? '/ar/contact' : '/contact'} className="text-sm text-gray-600 hover:text-teal-500 transition-colors">
                   {tr('distributionNetwork', isArabic)}
+                </Link>
+              </li>
+              <li>
+                <Link to={isArabic ? '/ar/contact' : '/contact'} className="text-sm text-gray-600 hover:text-teal-500 transition-colors">
+                  {tr('governments', isArabic)}
+                </Link>
+              </li>
+              <li>
+                <Link to={isArabic ? '/ar/contact' : '/contact'} className="text-sm text-gray-600 hover:text-teal-500 transition-colors">
+                  {tr('youthOrganizations', isArabic)}
+                </Link>
+              </li>
+              <li>
+                <Link to={isArabic ? '/ar/contact' : '/contact'} className="text-sm text-gray-600 hover:text-teal-500 transition-colors">
+                  {tr('restaurantsFoodProviders', isArabic)}
+                </Link>
+              </li>
+              <li>
+                <Link to={isArabic ? '/ar/contact' : '/contact'} className="text-sm text-gray-600 hover:text-teal-500 transition-colors">
+                  {tr('eventCoordinators', isArabic)}
+                </Link>
+              </li>
+              <li>
+                <Link to={isArabic ? '/ar/contact' : '/contact'} className="text-sm text-gray-600 hover:text-teal-500 transition-colors">
+                  {tr('athletesSports', isArabic)}
                 </Link>
               </li>
             </ul>
